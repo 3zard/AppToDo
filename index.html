@@ -14,21 +14,17 @@
         <h1>TODO</h1>
       </div>
       <div class="form-input">
-        <input
-          type="text"
-          name="inputName"
-          id="inputValue"
-          placeholder="Task name..."
-        />
-        <button class="button" onclick="add()">Add</button>
-        <button class="button" id="cancelButton" onclick="cancel()">
-          Cancel
-        </button>
+        <input type="text" name="inputName" id="inputValue" placeholder="Task name..."/>
+        <button class="button" id="addButton">Add</button>
+        <button class="button" id="cancelButton" >Cancel</button>
       </div>
-      <ul id="taskList"></ul>
+      <ul id="taskList">
+
+
+      </ul>
       <div class="filter">
         <label for="">filter :</label>
-        <select id="filter" onchange="filter()">
+        <select id="filter">
           <option value="all" selected>All</option>
           <option value="undone">Undone</option>
           <option value="done">Done</option>
