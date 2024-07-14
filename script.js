@@ -1,8 +1,11 @@
 const inputTask = document.getElementById("inputValue")
 const taskList = document.getElementById("taskList")
 const addButton = document.getElementById("addButton")
+const cancelButton = document.getElementById("cancelButton")
 
 let arrayList = []
+
+cancelButton.addEventListener("click", cancelTask)
 
 function addTask() {
     const taskName = inputTask.value.trim()
@@ -27,9 +30,6 @@ function editTask() {
 
 }
 function filterTask() {
-<<<<<<< HEAD
-
-=======
     const filterStatus = document.getElementById("filter").value
     taskList.innerHTML = ""
     let arrayFilter = []
@@ -52,10 +52,9 @@ function filterTask() {
     else {
         render(arrayList)
     }
->>>>>>> c7e0e5c (Trình | done function filter)
 }
 function cancelTask() {
-
+    inputTask.value = ""
 }
 function toggleCompleted() {
 
