@@ -27,7 +27,32 @@ function editTask() {
 
 }
 function filterTask() {
+<<<<<<< HEAD
 
+=======
+    const filterStatus = document.getElementById("filter").value
+    taskList.innerHTML = ""
+    let arrayFilter = []
+    if (filterStatus === "done") {
+        for (task of arrayList) {
+            if (task.completed === true) {
+                arrayFilter.push(task)
+            }
+        }
+        render(arrayFilter)
+    }
+    else if (filterStatus === "undone") {
+        for (task of arrayList) {
+            if (task.completed === false) {
+                arrayFilter.push(task)
+            }
+        }
+        render(arrayFilter)   
+    }
+    else {
+        render(arrayList)
+    }
+>>>>>>> c7e0e5c (Trình | done function filter)
 }
 function cancelTask() {
 
