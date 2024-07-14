@@ -22,6 +22,7 @@ function addTask() {
         arrayList.push(newTask)
         cancelTask()
         taskList.innerHTML = ""
+        sortTask()
         render(arrayList)
     }
 }
@@ -97,5 +98,19 @@ function editTask(id) {
 
 }
 function toggleCompleted(id) {
-
+    arrayList.map(task => {
+        if (id === task.id) {
+            task.completed = !task.completed
+        }
+    })
+    sortTask()
+    render(arrayList)
+}
+function sortTask() {
+    arrayList.sort(function(task1, task2){
+        if (task1.completed != task2.completed) {
+            return (task1.completed - task2.completed)
+        }
+        return (task1.name.localeCompare(task2.name))
+    })
 }
