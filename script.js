@@ -3,6 +3,12 @@ const taskList = document.getElementById("taskList")
 const addButton = document.getElementById("addButton")
 addButton.addEventListener("click", addTask)
 
+const cancelButton = document.getElementById("cancelButton")
+cancelButton.addEventListener("click", cancelTask)
+
+const filter = document.getElementById("filter")
+filter.addEventListener("change", filterTask)
+
 let arrayList = []
 let id = 0;
 function addTask() {
