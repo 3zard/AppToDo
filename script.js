@@ -14,6 +14,23 @@ filter.addEventListener("change", filterTask);
 let arrayList = [];
 let id = 0;
 function addTask() {
+  const taskName = inputTask.value.trim();
+  if (taskName !== "") {
+    if (arrayList.filter((task) => taskName === task.name).length === 0) {
+      let newTask = {
+        id: id++,
+        name: taskName,
+        completed: false,
+      };
+      arrayList.push(newTask);
+      cancelTask();
+      taskList.innerHTML = "";
+      render(arrayList);
+    } else {
+      alert("already have this task");
+      cancelTask();
+    }
+  }
     const taskName = inputTask.value.trim()
     if (taskName !== "") {
       if (arrayList.filter((task) => taskName === task.name).length === 0 ) {
@@ -126,8 +143,15 @@ function deleteTask(id) {
 function editTask(id) {
   const task = arrayList.find((task) => task.id === id);
   const newTaskName = prompt("Change your task here", task.name);
-  if (newTaskName !== null && newTaskName !== "") {
-    task.name = newTaskName.trim();
-    filterTask();
+  if (newTaskName !== null && newTaskName.trim() !== "") {
+    const isTaskExist = arrayList.find(
+      (task) => task.name === newTaskName.trim()
+    );
+    if (isTaskExist) {
+      alert("Already have this task !");
+    } else {
+      task.name = newTaskName.trim();
+      filterTask();
+    }
   }
 }
