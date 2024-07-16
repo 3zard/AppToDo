@@ -9,8 +9,6 @@ cancelButton.addEventListener("click", cancelTask);
 const filter = document.getElementById("filter");
 filter.addEventListener("change", filterTask);
 
-
-
 let arrayList = [];
 let id = 0;
 function addTask() {
@@ -31,23 +29,6 @@ function addTask() {
       cancelTask();
     }
   }
-    const taskName = inputTask.value.trim()
-    if (taskName !== "") {
-      if (arrayList.filter((task) => taskName === task.name).length === 0 ) {
-        let newTask = {
-            id: id++,
-            name: taskName,
-            completed: false
-        }
-        arrayList.push(newTask)
-        cancelTask()
-        taskList.innerHTML = ""
-        render(arrayList)
-      } else {
-        alert("already have this task")
-        cancelTask()
-      }
-    }
 }
 function render(listRender) {
   taskList.innerHTML = "";
@@ -60,7 +41,6 @@ function render(listRender) {
     checkbox.onchange = () => {
       toggleCompleted(value.id);
     };
-    
 
     const taskName = document.createElement("span");
     taskName.textContent = value.name;
