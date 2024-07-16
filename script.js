@@ -14,20 +14,23 @@ filter.addEventListener("change", filterTask);
 let arrayList = [];
 let id = 0;
 function addTask() {
-  const taskName = inputTask.value.trim();
-  if (taskName !== "") {
-    let newTask = {
-      id: id++,
-      name: taskName,
-      completed: false,
-    };
-    arrayList.push(newTask);
-    cancelTask();
-    taskList.innerHTML = "";
-    sortTask();
-    document.getElementById("filter").value = "all";
-    filterTask();
-  }
+    const taskName = inputTask.value.trim()
+    if (taskName !== "") {
+      if (arrayList.filter((task) => taskName === task.name).length === 0 ) {
+        let newTask = {
+            id: id++,
+            name: taskName,
+            completed: false
+        }
+        arrayList.push(newTask)
+        cancelTask()
+        taskList.innerHTML = ""
+        render(arrayList)
+      } else {
+        alert("already have this task")
+        cancelTask()
+      }
+    }
 }
 function render(listRender) {
   taskList.innerHTML = "";
