@@ -101,6 +101,7 @@ function toggleCompleted(id) {
     }
   });
   sortTask();
+  document.getElementById("filter").value = "all"
   render(arrayList);
 }
 function sortTask() {
