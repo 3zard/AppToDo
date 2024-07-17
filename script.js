@@ -23,7 +23,9 @@ function addTask() {
       arrayList.push(newTask);
       cancelTask();
       taskList.innerHTML = "";
-      render(arrayList);
+      document.getElementById("filter").value = "all"
+      sortTask()
+      filterTask()
     } else {
       alert("already have this task");
       cancelTask();
@@ -106,7 +108,7 @@ function sortTask() {
     if (task1.completed != task2.completed) {
       return task1.completed - task2.completed;
     }
-    return task1.name.localeCompare(task2.name);
+    return !isNaN(task1.name) || !isNaN(task2.name) ? task1.name - task2.name : task1.name.localeCompare(task2.name);
   });
 }
 
