@@ -15,15 +15,15 @@ function addTask() {
   const taskName = inputTask.value.trim();
   if (taskName !== "") {
     if (arrayList.filter((task) => taskName === task.name).length === 0) {
+      const filterStatus = document.getElementById("filter").value;
       let newTask = {
         id: id++,
         name: taskName,
-        completed: false,
+        completed: filterStatus == "done",
       };
       arrayList.push(newTask);
       cancelTask();
       taskList.innerHTML = "";
-      document.getElementById("filter").value = "all"
       sortTask()
       filterTask()
     } else {
