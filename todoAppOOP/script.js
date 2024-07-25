@@ -44,8 +44,11 @@ tasks.prototype.cancelTask = function () {
   document.getElementById("inputValue").value = "";
 };
 
-tasks.prototype.deleteTask = function () {
-};
+task.prototype.deleteTask = function () {
+  arrayList.map(() => arrayList[i].id === id);
+    arrayList.splice(i, 1); 
+    task.prototype.filterTask();
+}
 
 tasks.prototype.editTask = function () {};
 
