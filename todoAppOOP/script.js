@@ -26,10 +26,10 @@ tasks.prototype.addTask = function () {
   }
 };
 
-tasks.prototype.render = function () {
+tasks.prototype.render = function (listArray) {
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = ""
-  taskList.innerHTML = this.listTask
+  listArray.innerHTML = this.listTask
     .map((item) => {
       return ` <li><input onchange="newTaskList.toggleCompleted(${item.id})" type="checkbox" ${item.completed ? checked : ""}>
         <span>${item.name}</span>
