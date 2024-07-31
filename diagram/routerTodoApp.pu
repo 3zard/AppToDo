@@ -1,7 +1,7 @@
 @startuml diagram router createTask 
 start
 :Receive request; 
-if (check url = "/createTask" and method = "POST"?) then (no)
+if (check url = "/create-task" and method = "POST"?) then (no)
     :Response status code: error 404(not found);
 else (yes)
     :Call function createTask of controller;
