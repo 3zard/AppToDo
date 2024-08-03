@@ -7,7 +7,7 @@ tasks.prototype.addTask = function () {
   const taskName = document.getElementById("inputValue").value.trim();
   if (taskName !== "") {
     if (this.listTask.filter((task) => taskName === task.name).length === 0) {
-        const filterStatus = document.getElementById("filter").value;
+      const filterStatus = document.getElementById("filter").value;
       let newTask = {
         id: ++this.idCounter,
         name: taskName,
@@ -26,13 +26,19 @@ tasks.prototype.addTask = function () {
 
 tasks.prototype.render = function (listArray) {
   const taskList = document.getElementById("taskList");
-  taskList.innerHTML = ""
+  taskList.innerHTML = "";
   taskList.innerHTML = listArray
     .map((item) => {
-      return ` <li><input onchange="newTaskList.toggleCompleted(${item.id})" type="checkbox" ${item.completed ? "checked" : ""}>
+      return ` <li><input onchange="newTaskList.toggleCompleted(${
+        item.id
+      })" type="checkbox" ${item.completed ? "checked" : ""}>
         <span>${item.name}</span>
-        <button class="button" onclick="newTaskList.editTask(${item.id})">Edit</button>
-        <button class="button" onclick="newTaskList.deleteTask(${item.id})">Delete</button>
+        <button class="button" onclick="newTaskList.editTask(${
+          item.id
+        })">Edit</button>
+        <button class="button" onclick="newTaskList.deleteTask(${
+          item.id
+        })">Delete</button>
         </li>`;
     })
     .join("");
@@ -43,9 +49,11 @@ tasks.prototype.cancelTask = function () {
 };
 
 tasks.prototype.deleteTask = function (id) {
-  this.listTask.filter((item, index) => item.id === id ? this.listTask.splice(index, 1):"");
-    this.render(this.listTask);
-}
+  this.listTask.filter((item, index) =>
+    item.id === id ? this.listTask.splice(index, 1) : ""
+  );
+  this.render(this.listTask);
+};
 
 tasks.prototype.editTask = function (id) {
   const task = this.listTask.find((task) => task.id === id);
@@ -67,26 +75,30 @@ tasks.prototype.filterTask = function () {
   const filterStatus = document.getElementById("filter").value;
   const taskList = document.getElementById("taskList");
   if (filterStatus === "done") {
-    this.render(this.listTask.filter(function(value) {
-      if (value.completed === true) {
-        return value
-      }
-    }, []))
-  }
-  else if (filterStatus === "undone") {
-    this.render(this.listTask.filter(function(value) {
-      if (value.completed === false) {
-        return value
-      }
-    }, []))
-  }
-  else {
-    this.render(this.listTask)
+    this.render(
+      this.listTask.filter(function (value) {
+        if (value.completed === true) {
+          return value;
+        }
+      }, [])
+    );
+  } else if (filterStatus === "undone") {
+    this.render(
+      this.listTask.filter(function (value) {
+        if (value.completed === false) {
+          return value;
+        }
+      }, [])
+    );
+  } else {
+    this.render(this.listTask);
   }
 };
 
 tasks.prototype.toggleCompleted = function (id) {
-  this.listTask.forEach((item) => item.id === id ? item.completed = !item.completed:'')
+  this.listTask.forEach((item) =>
+    item.id === id ? (item.completed = !item.completed) : ""
+  );
   this.sortTask();
   this.filterTask();
 };
@@ -96,7 +108,9 @@ tasks.prototype.sortTask = function () {
     if (task1.completed != task2.completed) {
       return task1.completed - task2.completed;
     }
-    return !isNaN(task1.name) && !isNaN(task2.name) ? task1.name - task2.name : task1.name.localeCompare(task2.name);
+    return !isNaN(task1.name) && !isNaN(task2.name)
+      ? task1.name - task2.name
+      : task1.name.localeCompare(task2.name);
   });
 };
 
@@ -111,6 +125,31 @@ document.getElementById("cancelButton").addEventListener("click", function () {
   newTaskList.cancelTask();
 });
 
-document.getElementById("filter").addEventListener("change", function(){
+document.getElementById("filter").addEventListener("change", function () {
   newTaskList.filterTask();
-})
+});
+
+//logout
+function logout() {
+  localStorage.removeItem("rememberedUser");
+  sessionStorage.removeItem("currentUser");
+  alert("Logout successful!");
+  window.location.href = "./html/login.html";
+}
+
+window.onload = function () {
+  const rememberedUser = JSON.parse(localStorage.getItem("rememberedUser"));
+  const currentSessionUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  const currentPage = window.location.pathname.split("/").pop();
+  if (rememberedUser) {
+    document.getElementById(
+      "greeting"
+    ).innerText = `Hello ${rememberedUser.email}, bạn đã đăng nhập`;
+  } else if (currentSessionUser) {
+    document.getElementById(
+      "greeting"
+    ).innerText = `Hello ${currentSessionUser.email}, bạn đã đăng nhập`;
+  } else if (currentPage === "index.html" || currentPage === "" ) {
+    window.location.href = "/todoAppOOP/html/login.html";
+  }
+};
