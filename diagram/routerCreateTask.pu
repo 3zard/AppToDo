@@ -1,0 +1,15 @@
+@startuml diagram router createTask 
+start
+:Receive request; 
+if (check url = "/tasks/{id}") then (no) 
+    :Response status code: error 404(not found);
+    else (yes) 
+        if (method = "POST"?) then (no)
+            :Response status code: error 405(method is not correct);
+                else (yes) 
+                    :Call function createTask of controller;
+                    :Controller response to browser;
+        endif
+endif
+stop
+@enduml

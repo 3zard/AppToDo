@@ -1,4 +1,4 @@
-@startuml createTask activity
+@startuml createTask Controller activity
 start
 :Receive request from router; 
 if (check validate input ?) then (no)

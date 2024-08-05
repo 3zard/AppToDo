@@ -24,8 +24,8 @@ function addTask() {
       arrayList.push(newTask);
       cancelTask();
       taskList.innerHTML = "";
-      sortTask()
-      filterTask()
+      sortTask();
+      filterTask();
     } else {
       alert("already have this task");
       cancelTask();
@@ -101,7 +101,7 @@ function toggleCompleted(id) {
     }
   });
   sortTask();
-  document.getElementById("filter").value = "all"
+  document.getElementById("filter").value = "all";
   render(arrayList);
 }
 function sortTask() {
@@ -109,7 +109,9 @@ function sortTask() {
     if (task1.completed != task2.completed) {
       return task1.completed - task2.completed;
     }
-    return !isNaN(task1.name) && !isNaN(task2.name) ? task1.name - task2.name : task1.name.localeCompare(task2.name);
+    return !isNaN(task1.name) && !isNaN(task2.name)
+      ? task1.name - task2.name
+      : task1.name.localeCompare(task2.name);
   });
 }
 

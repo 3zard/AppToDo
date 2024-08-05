@@ -1,0 +1,11 @@
+@startuml deleteTask Controller activity
+start
+:Receive request from router;
+if (task exists?) then (no)
+    :Response status code: 404 (Not Found);
+else (yes)
+    :Delete task;
+    :Response status code: 200 (OK);
+endif
+stop
+@enduml
