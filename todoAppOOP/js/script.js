@@ -27,21 +27,13 @@ tasks.prototype.addTask = function () {
 tasks.prototype.render = function (listArray) {
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
-  taskList.innerHTML = listArray
-    .map((item) => {
-      return ` <li><input onchange="newTaskList.toggleCompleted(${
-        item.id
-      })" type="checkbox" ${item.completed ? "checked" : ""}>
-        <span>${item.name}</span>
-        <button class="button" onclick="newTaskList.editTask(${
-          item.id
-        })">Edit</button>
-        <button class="button" onclick="newTaskList.deleteTask(${
-          item.id
-        })">Delete</button>
-        </li>`;
-    })
-    .join("");
+  taskList.innerHTML = listArray.map((item) => {
+      return ` <li><input onchange="newTaskList.toggleCompleted(${item.id})" type="checkbox" ${item.completed ? "checked" : ""}>
+              <span>${item.name}</span>
+              <button class="button" onclick="newTaskList.editTask(${item.id})">Edit</button>
+              <button class="button" onclick="newTaskList.deleteTask(${item.id})">Delete</button>
+              </li>`;
+    }).join("");
 };
 
 tasks.prototype.cancelTask = function () {
