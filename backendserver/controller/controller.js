@@ -1,4 +1,4 @@
-const taskList = require("../data/data.json");
+const taskList = require("../data/data.json"); 
 const fs = require("fs");
 const getTaskList = (req, res) => {
   const status = req.url.split("?status=")[1];
@@ -25,7 +25,7 @@ const createTask = (req, res) => {
       res.writeHead(400, { "Content-Type": "text/plain" });
       res.end("Bad Request");
     } else {
-      let task = taskList.find((item) => item.id === id && item.name === name);
+      let task = taskList.find((item) => item.id === id || item.name === name);
       if (task) {
         res.writeHead(400, { "Content-Type": "text/plain" });
         res.end("Bad Request , item is exited");
