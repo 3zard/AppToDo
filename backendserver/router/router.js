@@ -3,14 +3,13 @@ const { getTaskList, createTask } = require("../controller/controller.js");
 const router = (req, res) => {
   switch (req.method) {
     case "GET":
-      if (req.url.match(/\/tasks\?status=(all|done|undone)/)) {
+      if (req.url.match(/\/tasks\?status=(done|undone)/)) {
         getTaskList(req, res);
       } else if (req.url === "/") {
         res.writeHead(200, { "Content-Type": "text/plain" });
         res.end("Main");
       } else if (req.url === "/tasks") {
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.end("All tasks");
+        getTaskList(req, res);
       } else {
         res.writeHead(404, { "Content-Type": "text/plain" });
         res.end("Not Found");
