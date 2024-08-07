@@ -1,13 +1,13 @@
-const taskList = require("../data/data.json"); 
+const taskList = require("../data/data.json");
 const fs = require("fs");
 const getTaskList = (req, res) => {
-  const status = req.url.split("?status=")[1];
+  const status = req.url.split("?status=")[1] || "all";
   let statusTaskList = [];
   if (status === "done") {
     statusTaskList = taskList.filter((item) => item.completed === true);
   } else if (status === "undone") {
     statusTaskList = taskList.filter((item) => item.completed === false);
-  } else {
+  } else if (status === "all") {
     statusTaskList = taskList;
   }
   res.writeHead(200, { "Content-Type": "application/json" });
