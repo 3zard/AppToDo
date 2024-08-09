@@ -1,30 +1,28 @@
 const { getTaskList, createTask } = require("../controller/controller.js");
 
-const router = (req, res) => {
-  switch (req.method) {
+const router = (request, response) => {
+  switch (request.method) {
     case "GET":
-      if (req.url.match(/\/tasks\?status=(done|undone)/)) {
-        getTaskList(req, res);
-      } else if (req.url === "/") {
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.end("Main");
-      } else if (req.url === "/tasks") {
-        getTaskList(req, res);
+      if (request.url.match(/\/tasks\?status=(done|undone)/) || request.url === "/tasks") {
+        getTaskList(request, response);
+      } else if (request.url === "/") {
+        response.writeHead(200, { "Content-Type": "text/plain" });
+        response.end("Main");
       } else {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end("Not Found");
+        response.writeHead(404, { "Content-Type": "text/plain" });
+        response.end("Not Found");
       }
       break;
     case "POST":
-      if (req.url === "/tasks") {
-        createTask(req, res);
+      if (request.url === "/tasks") {
+         createTask(request, response);
       } else {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end("Not Found");
+        response.writeHead(404, { "Content-Type": "text/plain" });
+        response.end("Not Found");
       }
       break;
     case "DELETE":
-      switch (req.url) {
+      switch (request.url) {
         case "/tasks/:id":
           break;
         default:
@@ -32,7 +30,7 @@ const router = (req, res) => {
       }
       break;
     case "PATCH":
-      switch (req.url) {
+      switch (request.url) {
         case "/tasks/:id":
           break;
         default:
@@ -40,8 +38,8 @@ const router = (req, res) => {
       }
       break;
     default:
-      res.writeHead(405, { "Content-Type": "text/plain" });
-      res.end("Method Not Allowed");
+      response.writeHead(405, { "Content-Type": "text/plain" });
+      response.end("Method Not Allowed");
   }
 };
 
