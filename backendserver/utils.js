@@ -10,22 +10,23 @@ function writeFile(filename, content) {
 
 function getBody(request) {
   return new Promise((resolve, reject) => {
-      let body = '';
+    let body = "";
 
-      request.on('data', chunk => {
-          body += chunk.toString();
-      });
+    request.on("data", (chunk) => {
+      body += chunk.toString();
+    });
 
-      request.on('end', () => {
-          resolve(body);
-      });
+    request.on("end", () => {
+      resolve(body);
+    });
 
-      request.on('error', error => {
-          reject(error);
-      });
+    request.on("error", (error) => {
+      reject(error);
+    });
   });
 }
 
 module.exports = {
   getBody,
+  writeFile,
 };
