@@ -1,46 +1,24 @@
-const { getTaskList, createTask } = require("../controller/controller.js");
-
-const router = (request, response) => {
-  switch (request.method) {
-    case "GET":
-      if (request.url.match(/\/tasks\?status=(done|undone)/) || request.url === "/tasks") {
-        getTaskList(request, response);
-      } else if (request.url === "/") {
-        response.writeHead(200, { "Content-Type": "text/plain" });
-        response.end("Main");
-      } else {
-        response.writeHead(404, { "Content-Type": "text/plain" });
-        response.end("Not Found");
-      }
-      break;
-    case "POST":
-      if (request.url === "/tasks") {
-         createTask(request, response);
-      } else {
-        response.writeHead(404, { "Content-Type": "text/plain" });
-        response.end("Not Found");
-      }
-      break;
-    case "DELETE":
-      switch (request.url) {
-        case "/tasks/:id":
-          break;
-        default:
-          break;
-      }
-      break;
-    case "PATCH":
-      switch (request.url) {
-        case "/tasks/:id":
-          break;
-        default:
-          break;
-      }
-      break;
-    default:
-      response.writeHead(405, { "Content-Type": "text/plain" });
-      response.end("Method Not Allowed");
-  }
+const {
+  getTaskList,
+  createTask,
+  handleNotFound,
+} = require("../controller/controller.js");
+const url = require("url");
+const routes = {
+  "/tasks": { 
+    "GET": { controller: getTaskList }, 
+    "POST": { controller: createTask } 
+  },
 };
 
-module.exports = { router };
+function route(request) {
+  const { method, url: requestUrl } = request;
+  const pathUrl = url.parse(requestUrl, true);
+  const { pathname } = pathUrl;
+  if (routes[pathname] && routes[pathname][method]) {
+    return routes[pathname][method].controller;
+  } 
+  return handleNotFound;
+
+}
+module.exports = { route };
