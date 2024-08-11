@@ -1,13 +1,15 @@
 const {
   getTaskList,
   createTask,
+  deleteTask,
   handleNotFound,
 } = require("../controller/controller.js");
 const url = require("url");
 const routes = {
   "/tasks": { 
     "GET": { controller: getTaskList }, 
-    "POST": { controller: createTask } 
+    "POST": { controller: createTask },
+    "DELETE": { controller: deleteTask}
   },
 };
 
