@@ -3,13 +3,15 @@ const {
   createTask,
   deleteTask,
   handleNotFound,
+  updateTask,
 } = require("../controller/controller.js");
 const url = require("url");
 const routes = {
-  "/tasks": { 
-    "GET": { controller: getTaskList }, 
-    "POST": { controller: createTask },
-    "DELETE": { controller: deleteTask}
+  "/tasks": {
+    GET: { controller: getTaskList },
+    POST: { controller: createTask },
+    DELETE: { controller: deleteTask },
+    PATCH: { controller: updateTask },
   },
 };
 
@@ -19,8 +21,7 @@ function route(request) {
   const { pathname } = pathUrl;
   if (routes[pathname] && routes[pathname][method]) {
     return routes[pathname][method].controller;
-  } 
+  }
   return handleNotFound;
-
 }
 module.exports = { route };
