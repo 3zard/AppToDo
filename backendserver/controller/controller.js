@@ -25,26 +25,61 @@ function getTaskList(request, response) {
   }
   response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
   response.end(JSON.stringify(statusTaskList));
-};
+}
 
 async function createTask(request, response) {
   try {
     const body = await getBody(request);
     const { id, name, completed } = JSON.parse(body);
     if (id === undefined || name === undefined || completed === undefined) {
-      response.writeHead(StatusCode.BAD_REQUEST, { "Content-Type": "text/plain" });
+      response.writeHead(StatusCode.BAD_REQUEST, {
+        "Content-Type": "text/plain",
+      });
       response.end("Bad request");
     } else {
       let task = taskList.find((item) => item.id === id || item.name === name);
       if (task) {
-        response.writeHead(StatusCode.BAD_REQUEST, { "Content-Type": "text/plain" });
+        response.writeHead(StatusCode.BAD_REQUEST, {
+          "Content-Type": "text/plain",
+        });
         response.end("Bad request");
       } else {
         taskList.push(JSON.parse(body));
         writeFile("./data/data.json", JSON.stringify(taskList));
-        response.writeHead(StatusCode.CREATED, { "Content-Type": "application/json" });
+        response.writeHead(StatusCode.CREATED, {
+          "Content-Type": "application/json",
+        });
         response.end(JSON.stringify({ id: id }));
-      } 
+      }
+    }
+  } catch (error) {
+    if (error) {
+      console.error("cant read body", error);
+    }
+  }
+}
+
+async function updateTask(request, response) {
+  try {
+    const idFromUrl = request.url.split("?id=")[1];
+    const body = await getBody(request);
+    const { name, completed } = JSON.parse(body);
+    let newTask = taskList.find((item) => item.id === Number(idFromUrl));
+    if (newTask) {
+      newTask.name = name || newTask.name;
+      if (completed !== undefined) {
+        newTask.completed = completed;
+      }
+      writeFile("./data/data.json", JSON.stringify(taskList));
+      response.writeHead(StatusCode.CREATED, {
+        "Content-Type": "application/json",
+      });
+      response.end(JSON.stringify({ newTask }));
+    } else {
+      response.writeHead(StatusCode.BAD_REQUEST, {
+        "Content-Type": "text/plain",
+      });
+      response.end("Bad requestuest");
     }
   } catch (error) {
     if (error) {
@@ -55,25 +90,29 @@ async function createTask(request, response) {
 
 function deleteTask(request, response) {
   const taskId = request.url.split("?id=")[1];
-  fs.readFile("./data/data.json", 'utf8', (error, data) => {
+  fs.readFile("./data/data.json", "utf8", (error, data) => {
     if (error) {
-      response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, { "Content-Type": "application/json" });
+      response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+        "Content-Type": "application/json",
+      });
       response.end("Cannot read data");
       return;
     }
     let currentTasks = JSON.parse(data);
-    const newTasks = currentTasks.filter(task => task.id.toString() !== taskId)
+    const newTasks = currentTasks.filter(
+      (task) => task.id.toString() !== taskId
+    );
     if (currentTasks.length === newTasks.length) {
-        handleNotFound(request, response);
-        return;
+      handleNotFound(request, response);
+      return;
     }
-    writeFile("./data/data.json", JSON.stringify(newTasks))
-    response.writeHead(StatusCode.OK, { "Content-Type": "application/json" })
+    writeFile("./data/data.json", JSON.stringify(newTasks));
+    response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
     response.end(`Task with ID ${taskId} has been deleted successfully.`);
-  })
+  });
 }
 
-function handleNotFound (request, response) {
+function handleNotFound(request, response) {
   response.writeHead(StatusCode.NOT_FOUND, { "Content-Type": "text/plain" });
   response.end("Not Found");
 }
@@ -82,5 +121,6 @@ module.exports = {
   createTask,
   getTaskList,
   deleteTask,
-  handleNotFound
+  handleNotFound,
+  updateTask,
 };
