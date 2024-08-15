@@ -1,6 +1,6 @@
 const taskList = require("../../data/data.json");
 const fs = require("fs");
-const { getBody, writeFile, handleNotFound } = require("../../utils.js");
+const { getBody, writeFile, handleNotFound, StatusCode } = require("../../utils.js");
 
 function getTaskList(request, response) {
   const status = request.url.split("?status=")[1] || "all";
@@ -60,15 +60,15 @@ async function updateTask(request, response) {
         newTask.completed = completed;
       }
       writeFile("./data/data.json", JSON.stringify(taskList));
-      response.writeHead(StatusCode.CREATED, {
+      response.writeHead(StatusCode.NO_CONTENT, {
         "Content-Type": "application/json",
       });
-      response.end(JSON.stringify({ newTask }));
+      response.end();
     } else {
       response.writeHead(StatusCode.BAD_REQUEST, {
         "Content-Type": "text/plain",
       });
-      response.end("Bad requestuest");
+      response.end("Bad request");
     }
   } catch (error) {
     if (error) {
@@ -96,8 +96,8 @@ function deleteTask(request, response) {
       return;
     }
     writeFile("./data/data.json", JSON.stringify(newTasks));
-    response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
-    response.end(`Task with ID ${taskId} has been deleted successfully.`);
+    response.writeHead(StatusCode.NO_CONTENT, { "Content-Type": "application/json" });
+    response.end();
   });
 }
 
