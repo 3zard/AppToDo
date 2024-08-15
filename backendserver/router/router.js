@@ -4,7 +4,7 @@ const {
   deleteTask,
   handleNotFound,
   updateTask,
-} = require("../controller/controller.js");
+} = require("../controller/tasks/index.js");
 const url = require("url");
 const routes = {
   "/tasks": {
