@@ -77,7 +77,7 @@ window.onload = function () {
     if (currentPage === "login.html" || currentPage === "signup.html") {
       window.location.href = "../index.html";
     }
-  } else if (currentPage === "index.html") {
-    window.location.href = "/todoAppOOP/html/login.html";
+  } else if (currentPage === "./index.html") {
+    window.location.href = "./todoAppOOP/html/login.html";
   }
 };
