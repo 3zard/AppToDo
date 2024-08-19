@@ -1,6 +1,11 @@
-const taskRoute = require("./taskRouter.js");
+var taskRouter = require("./taskRouter");
+var userRouter = require("./userRouter");
 
-module.exports = {
-  "/tasks": taskRoute,
+var router = {
+  run: function (request, response) {
+    taskRouter.run(request, response);
+    userRouter.run(request, response);
+  },
 };
-    
+
+module.exports = router;
