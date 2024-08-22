@@ -1,3 +1,24 @@
+// const apiURL = "http://localhost:3001/users";
+async function fetchAPIServer(apiURL, body) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = localStorage.getItem("token");
+    xhr.open('POST', `${apiURL}/register`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.status);
+      } else {
+        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
+      }
+    };
+    xhr.onerror = function() {
+      alert(`Network Error`);
+    }
+    xhr.send(JSON.stringify(body));
+  })
+}
 // login signup
 if (!localStorage.getItem("users")) {
   localStorage.setItem("users", JSON.stringify([]));
@@ -12,23 +33,18 @@ function register() {
       alert("Repassword not match!");
       return;
     }
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    const userExists = users.some((user) => user.email === email);
-
-    if (userExists) {
-      alert("Email is already registered!");
-      return;
+    const registerUser = {
+      "username": email,
+      "password": password
     }
-
-    const newUser = {
-      email: email,
-      password: password,
-    };
-    users.push(newUser);
-
-    localStorage.setItem("users", JSON.stringify(users));
-    alert("Registration successful!");
-    window.location.href = "login.html";
+    const exitcode = fetchAPIServer("http://localhost:3001/users/signup", registerUser)
+    if (exitcode === 201) {
+      alert("Registration successful!");
+      window.location.href = "login.html";
+    }
+    if (exitcode >= 400) {
+      alert("Email is already registered!");
+    }
   } else {
     alert("Please fill in both email and password fields.");
     return;
@@ -41,22 +57,23 @@ function login() {
   const rememberMe = document.getElementById("rememberMe").checked;
 
   if (email !== "" && password !== "") {
-    let users = JSON.parse(localStorage.getItem("users") || []);
-    const user = users.find(
-      (user) => user.email === email && user.password === password
-    );
+    const loginUser = {
+      "username": email,
+      "password": password
+    }
+    const exitcode = fetchAPIServer("http://localhost:3001/users/login")
 
-    if (user) {
+    
+    if (exitcode === 200) {
       alert("Login successful!");
-
       if (rememberMe) {
         localStorage.setItem("rememberedUser", JSON.stringify(user));
       } else {
         sessionStorage.setItem("currentUser", JSON.stringify(user));
       }
-
       window.location.href = "../index.html";
-    } else {
+    }
+    if (exitcode >= 400) {
       alert("Invalid email or password.");
     }
   } else {
