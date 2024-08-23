@@ -1,4 +1,4 @@
-const apiUserURL = "http://localhost:3001/users";
+const apiUserURL = "http://localhost:3000/users";
 async function fetchAPIServer(apiURL, body) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();

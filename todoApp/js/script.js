@@ -1,4 +1,4 @@
-const apiURL = "http://localhost:3001/tasks";
+const apiURL = "http://localhost:3000/tasks";
 //CRUD, C-addTask, R-filterTask, U-editTask, D-deleteTask
 async function fetchTaskList() {
   return new Promise((resolve, reject) => {
