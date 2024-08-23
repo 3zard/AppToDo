@@ -136,12 +136,12 @@ window.onload = function () {
   if (rememberedUser) {
     document.getElementById(
       "greeting"
-    ).innerText = `Hello ${rememberedUser.email}, bạn đã đăng nhập`;
+    ).innerText = `Hello ${rememberedUser.email}`;
   } else if (currentSessionUser) {
     document.getElementById(
       "greeting"
-    ).innerText = `Hello ${currentSessionUser.email}, bạn đã đăng nhập`;
+    ).innerText = `Hello ${currentSessionUser.email}`;
   } else if (currentPage === "index.html" || currentPage === "" ) {
-    window.location.href = "/todoAppOOP/html/login.html";
+    window.location.href = "/todoApp/html/login.html";
   }
 };
