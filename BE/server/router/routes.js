@@ -1,8 +1,11 @@
+const { register } = require("module");
+
 module.exports = {
   tasks: {
     value: "/tasks",
   },
   user: {
-    value: "/login",
+    login: "/login",
+    register: "/register",
   },
 };
