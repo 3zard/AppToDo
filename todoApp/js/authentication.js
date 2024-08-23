@@ -78,6 +78,6 @@ window.onload = function () {
       window.location.href = "../index.html";
     }
   } else if (currentPage === "./index.html") {
-    window.location.href = "./todoAppOOP/html/login.html";
+    window.location.href = "./todoApp/html/login.html";
   }
 };
