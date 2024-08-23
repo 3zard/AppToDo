@@ -1,14 +1,17 @@
 const apiURL = "http://localhost:3000/tasks";
 //CRUD, C-addTask, R-filterTask, U-editTask, D-deleteTask
-async function fetchTaskList() {
+async function fetchTaskList(id) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = localStorage.getItem('token');
-    // xhr.open("POST", `${apiURL}`, true);
-    xhr.open("POST", "http://localhost:3001/read", true);
+    if (id) {
+      xhr.open("GET", `${apiURL}/${id}`, true);
+    }
+    else {
+      xhr.open("GET", `${apiURL}`, true);
+    }
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
     xhr.onload = function() {
       if (xhr.status === 200) {
         resolve(xhr.response);
@@ -161,7 +164,7 @@ tasks.prototype.editTask = async function (id) {
   const newTaskName = prompt("Change your task here", task.name);
   if (newTaskName !== null && newTaskName.trim() !== "") {
     try {
-      const editRunner = await fetchTaskListForEditing(id, newTaskName.trim());
+      const editRunner = await fetchTaskListForEditing(id, {name: newTaskName.trim()});
       alert("Edit successful!");
       this.getTaskList();
       this.render(this.listTask);
@@ -209,12 +212,41 @@ tasks.prototype.filterTask = async function () {
   }
 };
 
+async function fetchTaskListForToggling(id, body) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = localStorage.getItem('token');
+    xhr.open("PATCH", `${apiURL}/${id}`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.response);
+      } else {
+        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
+      }
+    };
+    xhr.onerror = function() {
+      reject("Lỗi cmn: Network Error");
+    }
+    xhr.send(JSON.stringify(body));
+  });
+}
+
 tasks.prototype.toggleCompleted = function (id) {
-  this.listTask.forEach((item) =>
-    item.id === id ? (item.completed = !item.completed) : ""
-  );
-  this.sortTask();
-  this.filterTask();
+  // this.listTask.forEach((item) =>
+  //   item.id === id ? (item.completed = !item.completed) : ""
+  // );
+  const completedRunner = JSON.parse(fetchTaskList(id));
+  try {
+    const toggleRunner = fetchTaskListForToggling(id, {completed: !completedRunner.completed});
+    alert("Toggle successful!");
+    this.sortTask();
+    this.filterTask();
+  }
+  catch (error) {
+    alert("Toggle failed!");
+  }
 };
 
 tasks.prototype.sortTask = function () {

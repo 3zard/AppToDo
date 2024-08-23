@@ -8,7 +8,7 @@ async function fetchAPIServer(apiURL, body) {
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.status);
+        resolve(xhr.response);
       } else {
         reject(`Error: ${xhr.status} - ${xhr.statusText}`);
       }
@@ -37,13 +37,14 @@ function register() {
       "username": email,
       "password": password
     }
-    const exitcode = fetchAPIServer(`${apiUserURL}/register`, registerUser)
-    if (exitcode === 201) {
+    try {
+      const registerRunner = fetchAPIServer(`${apiUserURL}/register`, registerUser)
       alert("Registration successful!");
       window.location.href = "login.html";
-    }
-    if (exitcode >= 400) {
-      alert("Email is already registered!");
+    } 
+    catch (error) {
+      alert("Registration failed!");
+      console.error(error);
     }
   } else {
     alert("Please fill in both email and password fields.");
@@ -61,10 +62,9 @@ function login() {
       "username": email,
       "password": password
     }
-    const exitcode = fetchAPIServer(`${apiUserURL}/login`, loginUser)
-
-    
-    if (exitcode === 200) {
+    try {
+      const loginRunner = fetchAPIServer(`${apiUserURL}/login`, loginUser);
+      localStorage.setItem("token", JSON.parse(loginRunner.token));
       alert("Login successful!");
       if (rememberMe) {
         localStorage.setItem("rememberedUser", JSON.stringify(user));
@@ -73,8 +73,9 @@ function login() {
       }
       window.location.href = "../index.html";
     }
-    if (exitcode >= 400) {
+    catch (error) {
       alert("Invalid email or password.");
+      console.error(error);
     }
   } else {
     alert("Please fill in both email and password fields.");
