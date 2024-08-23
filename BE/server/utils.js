@@ -1,5 +1,11 @@
 const fs = require("fs");
 
+
+
+function handleNotFound(request, response) {
+  response.writeHead(StatusCode.NOT_FOUND, { "Content-Type": "text/plain" });
+  response.end("Not Found");
+}
 function writeFile(filename, content) {
   fs.writeFile(filename, content, (error) => {
     if (error) {
@@ -47,6 +53,7 @@ module.exports = {
   getBody,
   writeFile,
   StatusCode,
-  getStatusCondition
+  getStatusCondition,
+  handleNotFound
 };
 
