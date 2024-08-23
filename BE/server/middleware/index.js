@@ -1,5 +1,4 @@
 const { StatusCode } = require("../utils");
-const users = require("../data/user.json");
 
 function runMiddleWares(request, response, middlewares) {
   let index = 0;

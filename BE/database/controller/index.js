@@ -8,6 +8,7 @@ const {
 } = require("../utils.js");
 const fs = require("fs");
 
+
 async function readDataBase(request, response) {
   const collection = request.url.split("/")[1]; // because the url is /collection/read
   const body = await getBody(request);
