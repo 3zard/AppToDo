@@ -3,6 +3,7 @@ const {
   writeFile,
   getBody,
   getStatusCondition,
+  handleNotFound
 } = require("../../utils.js");
 
 async function getTaskList(request, response) {
@@ -30,13 +31,16 @@ async function getTaskList(request, response) {
     response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
     response.end(JSON.stringify(data));
   } catch (error) {
-    console.error("There was a problem with the fetch operation:", error);
     handleNotFound(request, response);
   }
 }
 
 async function createTask(request, response, user) {
-  
+  try {
+    
+  } catch (error) {
+    
+  }
 }
 
 async function updateTask(request, response) {
@@ -47,15 +51,11 @@ function deleteTask(request, response) {
   
 }
 
-function handleNotFound(request, response) {
-  response.writeHead(StatusCode.NOT_FOUND, { "Content-Type": "text/plain" });
-  response.end("Not Found");
-}
+
 
 module.exports = {
   createTask,
   getTaskList,
   deleteTask,
-  handleNotFound,
   updateTask,
 };
