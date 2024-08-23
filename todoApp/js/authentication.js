@@ -1,4 +1,4 @@
-// const apiURL = "http://localhost:3001/users";
+const apiUserURL = "http://localhost:3001/users";
 async function fetchAPIServer(apiURL, body) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -37,7 +37,7 @@ function register() {
       "username": email,
       "password": password
     }
-    const exitcode = fetchAPIServer("http://localhost:3001/users/signup", registerUser)
+    const exitcode = fetchAPIServer(`${apiUserURL}/register`, registerUser)
     if (exitcode === 201) {
       alert("Registration successful!");
       window.location.href = "login.html";
@@ -61,7 +61,7 @@ function login() {
       "username": email,
       "password": password
     }
-    const exitcode = fetchAPIServer("http://localhost:3001/users/login")
+    const exitcode = fetchAPIServer(`${apiUserURL}/login`, loginUser)
 
     
     if (exitcode === 200) {

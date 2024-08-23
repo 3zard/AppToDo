@@ -1,11 +1,11 @@
-const apiURL = "http://localhost:3001";
-
-
+const apiURL = "http://localhost:3001/tasks";
+//CRUD, C-addTask, R-filterTask, U-editTask, D-deleteTask
 async function fetchTaskList() {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = localStorage.getItem('token');
-    xhr.open("POST", `${apiURL}/read`, true);
+    // xhr.open("POST", `${apiURL}`, true);
+    xhr.open("POST", "http://localhost:3001/read", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
@@ -16,7 +16,6 @@ async function fetchTaskList() {
         reject(`Error: ${xhr.status} - ${xhr.statusText}`);
       }
     };
-
     xhr.onerror = function() {
       reject("Lỗi cmn: Network Error");
     };
@@ -37,6 +36,27 @@ tasks.prototype.getTaskList = async function () {
   this.listTask = await fetchTaskList();
 }
 
+async function fetchTaskListForAdding(body) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = localStorage.getItem('token');
+    xhr.open("POST", `${apiURL}`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.send(JSON.stringify(body));
+    xhr.onload = function() {
+      if (xhr.status === 201) {
+        resolve(xhr.response);
+      } else {
+        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
+      }
+    };
+    xhr.onerror = function() {
+      reject("Lỗi cmn: Network Error");
+    };
+  });
+}
+
 tasks.prototype.addTask = function () {
   const taskName = document.getElementById("inputValue").value.trim();
   if (taskName !== "") {
@@ -45,36 +65,17 @@ tasks.prototype.addTask = function () {
       name: taskName,
       completed: filterStatus == "done",
     };
-    const xhr = new XMLHttpRequest();
-    const token = localStorage.getItem('token');
-    xhr.open('POST', `${apiURL}`, true);
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-    xhr.responseType = 'json';
-    xhr.send(JSON.stringify(newTask));
-    xhr.onload = function() {
-      if (xhr.status === 201) {
-        console.log("123");
-        const data = xhr.response;
-        
-        this.cancelTask();
-        this.sortTask();
-        this.filterTask();
-      }
+    try {
+      const addRunner = fetchTaskListForAdding(newTask);
+      alert("Add successful!");
+      this.getTaskList();
+      this.cancelTask();
+      this.sortTask();
+      this.filterTask();
     }
-    xhr.onerror = function() {
-      alert(`Network Error`);
+    catch (error) {
+      alert("Add failed!");
     }
-    // if (this.listTask.filter((task) => taskName === task.name).length === 0) {
-      
-    //   let newTask = {
-    //     id: ++this.idCounter,
-    //     name: taskName,
-    //     completed: filterStatus == "done",
-    //   };
-      // this.listTask.push(newTask);
-      // this.cancelTask();
-      // this.sortTask();
-      // this.filterTask();
     } else {
       alert("already have this task");
       cancelTask();
@@ -96,80 +97,116 @@ tasks.prototype.render = function (listArray) {
 
 tasks.prototype.cancelTask = function () {
   document.getElementById("inputValue").value = "";
-  console.log(this.listTask)
 };
 
-tasks.prototype.deleteTask = function (id) {
-  
-  this.listTask.filter((item, index) =>
-    item.id === id ? this.listTask.splice(index, 1) : ""
-  );
-  this.render(this.listTask);
+async function fetchTaskListForDeleting(id) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = localStorage.getItem('token');
+    xhr.open("DELETE", `${apiURL}/${id}`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.response);
+      } else {
+        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
+      }
+    };
+    xhr.onerror = function() {
+      reject("Lỗi cmn: Network Error");
+    };
+
+    xhr.send();
+  });
+}
+
+tasks.prototype.deleteTask = async function (id) {
+  try {
+    const deleteRunner = await fetchTaskListForDeleting(id);
+    alert("Delete successful!");
+    this.getTaskList();
+    this.render(this.listTask);
+  }
+  catch (error) {
+    alert("Delete failed!");
+  }
 };
 
-tasks.prototype.editTask = function (id) {
-  const task = this.listTask.find((task) => task.id === id);
+async function fetchTaskListForEditing(id, body) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = localStorage.getItem('token');
+    xhr.open("PATCH", `${apiURL}/${id}`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.response);
+      } else {
+        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
+      }
+    };
+    xhr.onerror = function() {
+      reject("Lỗi cmn: Network Error");
+    };
+
+    xhr.send(JSON.stringify(body));
+  });
+}
+
+tasks.prototype.editTask = async function (id) {
   const newTaskName = prompt("Change your task here", task.name);
   if (newTaskName !== null && newTaskName.trim() !== "") {
-    const isTaskExist = this.listTask.find(
-      (task) => task.name === newTaskName.trim()
-    );
-    if (isTaskExist) {
-      alert("Already have this task !");
-    } else {
-      task.name = newTaskName.trim();
-      this.render();
+    try {
+      const editRunner = await fetchTaskListForEditing(id, newTaskName.trim());
+      alert("Edit successful!");
+      this.getTaskList();
+      this.render(this.listTask);
     }
+    catch (error) {
+      alert("Already have this task !");
+    }
+  }
+  else {
+    alert("Edit failed!");
   }
 };
 
 
-// fetchTaskList();
+async function fetchTaskListForFiltering(status) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = localStorage.getItem('token');
+    xhr.open("GET", `${apiURL}?status=${status}`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
-tasks.prototype.filterTask = function () {
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.response);
+      } else {
+        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
+      }
+    };
+    xhr.onerror = function() {
+      reject("Lỗi cmn: Network Error");
+    };
+    xhr.send();
+  });
+}
+
+tasks.prototype.filterTask = async function () {
   const filterStatus = document.getElementById("filter").value;
-  const taskList = document.getElementById("taskList");
-  const xhr = new XMLHttpRequest();
-  // const token = localStorage.getItem('token');
-  xhr.open("POST", "http://localhost:3001/read", true);
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  // xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-    xhr.send(JSON.stringify({
-    "collection": "task"
-}));
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      console.log("OK");
-    }
-    else {
-      console.log("blabla");
-    }
+  try {
+    const data = await fetchTaskListForFiltering(filterStatus);
+    this.render(JSON.parse(data));
   }
-  xhr.onerror = function() {
-    console.log("Lỗi cmn");
+  catch (error) {
+    console.log(error);
   }
-
-  
-
-  // if (filterStatus === "done") {
-  //   this.render(
-  //     this.listTask.filter(function (value) {
-  //       if (value.completed === true) {
-  //         return value;
-  //       }
-  //     }, [])
-  //   );
-  // } else if (filterStatus === "undone") {
-  //   this.render(
-  //     this.listTask.filter(function (value) {
-  //       if (value.completed === false) {
-  //         return value;
-  //       }
-  //     }, [])
-  //   );
-  // } else {
-  //   this.render(this.listTask);
-  // }
 };
 
 tasks.prototype.toggleCompleted = function (id) {
