@@ -2,7 +2,6 @@ const {
   StatusCode,
   writeFile,
   getBody,
-  getStatusCondition,
   handleNotFound,
   generateId,
 } = require("../utils.js");
@@ -65,7 +64,9 @@ async function createDatabase(request, response) {
     data = await fs.readFile(path, "utf8");
   } catch (error) {
     console.error("Error reading database:", error);
-    response.writeHead(StatusCode.NOT_FOUND, {  "Content-Type": "application/json" });
+    response.writeHead(StatusCode.NOT_FOUND, {
+      "Content-Type": "application/json",
+    });
     response.end(JSON.stringify({ error: "Collection not found" }));
   }
   const records = JSON.parse(data);
@@ -90,26 +91,19 @@ async function updateDatabase(request, response) {
       response.writeHead(StatusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
-      response.end(JSON.stringify({ error: "Invalid filter or update data" }));
+      response.end(JSON.stringify({ error: "Invalid request body" }));
       return;
     }
-    const { filter, update } = JSON.parse(body);
+    const { record } = JSON.parse(body);
 
-    if (
-      !filter ||
-      !update ||
-      Object.keys(filter).length === 0 ||
-      Object.keys(update).length === 0
-    ) {
+    if (!record || Object.keys(record).length === 0) {
       response.writeHead(StatusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
-      response.end(JSON.stringify({ error: "Invalid filter or update data" }));
+      response.end(JSON.stringify({ error: "Invalid record data" }));
       return;
     }
-
     const path = `./data/${collection}.json`;
-
     let data;
     try {
       data = await fs.readFile(path, "utf8");
@@ -118,20 +112,10 @@ async function updateDatabase(request, response) {
       return;
     }
     const records = JSON.parse(data);
-    const updatedRecords = records.map((record) => {
-      let match = true;
-      for (const key in filter) {
-        if (record[key] !== filter[key].toString()) {
-          match = false;
-          break;
-        }
-      }
-      return match ? { ...record, ...update } : record;
-    });
-    console.log(records, updatedRecords);
-
+    const updatedRecords = records.map((item) =>
+      item.id === record.id ? record : item
+    );
     writeFile(path, JSON.stringify(updatedRecords));
-
     response.writeHead(StatusCode.NO_CONTENT, {
       "Content-Type": "application/json",
     });
@@ -159,30 +143,32 @@ async function deleteDatabase(request, response) {
   const path = `./data/${collection}.json`;
   let data;
   try {
-    data = await fs.readFile(path  , "utf8");
+    data = await fs.readFile(path, "utf8");
   } catch (error) {
     console.error("Error reading database:", error);
-    response.writeHead(StatusCode.NOT_FOUND, { "Content-Type": "application/json" });
-    response.end(JSON.stringify({ error: "Collection not found" }));
-  }
-    const records = JSON.parse(data);
-    const updatedRecords = records.filter((record) => {
-      let match = true;
-      for (const key in filter) {
-        if (record[key] !== filter[key].toString()) {
-          match = false;
-          break;
-        }
-      }
-      return !match;
-    });
-
-    writeFile(path, JSON.stringify(updatedRecords));
-    response.writeHead(StatusCode.NO_CONTENT, {
+    response.writeHead(StatusCode.NOT_FOUND, {
       "Content-Type": "application/json",
     });
-    response.write(JSON.stringify(updatedRecords));
-    response.end();
+    response.end(JSON.stringify({ error: "Collection not found" }));
+  }
+  const records = JSON.parse(data);
+  const updatedRecords = records.filter((record) => {
+    let match = true;
+    for (const key in filter) {
+      if (record[key] !== filter[key].toString()) {
+        match = false;
+        break;
+      }
+    }
+    return !match;
+  });
+
+  writeFile(path, JSON.stringify(updatedRecords));
+  response.writeHead(StatusCode.NO_CONTENT, {
+    "Content-Type": "application/json",
+  });
+  response.write(JSON.stringify(updatedRecords));
+  response.end();
 }
 
 module.exports = {
