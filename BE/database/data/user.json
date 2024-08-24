@@ -1,1 +1,5 @@
-[{"id":"1724423118768","username":"hihi","password":"321"},{"id":"1724423784358","username":"hihi","password":"321"},{"id":"1724425697080","username":"hi","password":"123"},{"id":"1724428123023","username":"huihi","password":"haha"}]
+[
+  { "id": "1", "username": "hihi", "password": "321" },
+  { "id": "1724425697080", "username": "hi", "password": "123" },
+  { "id": "1724428123023", "username": "huihi", "password": "haha" }
+]

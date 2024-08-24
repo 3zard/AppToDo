@@ -17,15 +17,13 @@ var userRouter = {
       request,
       response,
       routes.tasks.value,
-      taskController.deleteTask,
-      middleware.checkToken
+      [middleware.checkToken, taskController.deleteTask]
     );
     routerMethods.patch(
       request,
       response,
       routes.tasks.value,
-      taskController.updateTask,
-      middleware.checkToken
+      [middleware.checkToken, taskController.updateTask]
     );
   },
 };
