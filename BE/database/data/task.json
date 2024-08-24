@@ -17,32 +17,8 @@
   { "id": "1724354013721", "name": "Task 7", "completed": true, "owner": "2" },
   {
     "id": "1724422024454",
-    "name": "Task 10",
+    "name": "Task 1011",
     "completed": false,
     "owner": "2"
-  },
-  {
-    "id": "1724427571326",
-    "name": "task ne anh iui",
-    "completed": false,
-    "owner": {}
-  },
-  {
-    "id": "1724427661590",
-    "name": "task ne anh ",
-    "completed": false,
-    "owner": {}
-  },
-  {
-    "id": "1724427700775",
-    "name": "task ne anh ",
-    "completed": false,
-    "owner": {}
-  },
-  {
-    "id": "1724427747975",
-    "name": "task ne anh ",
-    "completed": false,
-    "owner": "1724425697080"
   }
 ]
