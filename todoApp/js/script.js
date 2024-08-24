@@ -70,11 +70,11 @@ tasks.prototype.addTask = function () {
     };
     try {
       const addRunner = fetchTaskListForAdding(newTask);
-      alert("Add successful!");
       this.getTaskList();
-      this.cancelTask();
+      // this.cancelTask();
       this.sortTask();
       this.filterTask();
+      alert("Add successful!");
     }
     catch (error) {
       alert("Add failed!");
@@ -292,11 +292,11 @@ window.onload = function () {
   if (rememberedUser) {
     document.getElementById(
       "greeting"
-    ).innerText = `Hello ${rememberedUser.email}`;
+    ).innerText = `Hello ${rememberedUser}`;
   } else if (currentSessionUser) {
     document.getElementById(
       "greeting"
-    ).innerText = `Hello ${currentSessionUser.email}`;
+    ).innerText = `Hello ${currentSessionUser}`;
   } else if (currentPage === "index.html" || currentPage === "" ) {
     window.location.href = "/todoApp/html/login.html";
   }
