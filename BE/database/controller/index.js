@@ -11,7 +11,6 @@ async function readDataBase(request, response) {
   const collection = request.url.split("/")[1]; // because the url is /collection/read
   const body = await getBody(request);
   const { filter } = JSON.parse(body);
-  console.log(filter);
   if (!filter || Object.keys(filter).length === 0) {
     response.writeHead(StatusCode.BAD_REQUEST, {
       "Content-Type": "application/json",
@@ -49,7 +48,6 @@ async function readDataBase(request, response) {
 async function createDatabase(request, response) {
   const collection = request.url.split("/")[1]; // because the url is /collection/create
   const body = await getBody(request);
-  console.log(body);
   const { record } = JSON.parse(body);
   if (!record || Object.keys(record).length === 0) {
     response.writeHead(StatusCode.BAD_REQUEST, {
@@ -95,7 +93,6 @@ async function updateDatabase(request, response) {
       return;
     }
     const { record } = JSON.parse(body);
-
     if (!record || Object.keys(record).length === 0) {
       response.writeHead(StatusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
@@ -113,7 +110,7 @@ async function updateDatabase(request, response) {
     }
     const records = JSON.parse(data);
     const updatedRecords = records.map((item) =>
-      item.id === record.id ? record : item
+      item.id === record.id.toString() ? record : item
     );
     writeFile(path, JSON.stringify(updatedRecords));
     response.writeHead(StatusCode.NO_CONTENT, {
@@ -132,8 +129,8 @@ async function updateDatabase(request, response) {
 async function deleteDatabase(request, response) {
   const collection = request.url.split("/")[1]; // because the url is /collection/delete
   const body = await getBody(request);
-  const { filter } = JSON.parse(body);
-  if (!filter || Object.keys(filter).length === 0) {
+  const { record } = JSON.parse(body);
+  if (!record || Object.keys(record).length === 0) {
     response.writeHead(StatusCode.BAD_REQUEST, {
       "Content-Type": "application/json",
     });
@@ -152,17 +149,9 @@ async function deleteDatabase(request, response) {
     response.end(JSON.stringify({ error: "Collection not found" }));
   }
   const records = JSON.parse(data);
-  const updatedRecords = records.filter((record) => {
-    let match = true;
-    for (const key in filter) {
-      if (record[key] !== filter[key].toString()) {
-        match = false;
-        break;
-      }
-    }
-    return !match;
-  });
-
+  const updatedRecords = records.filter(
+    (item) => item.id !== record.id.toString()
+  );
   writeFile(path, JSON.stringify(updatedRecords));
   response.writeHead(StatusCode.NO_CONTENT, {
     "Content-Type": "application/json",

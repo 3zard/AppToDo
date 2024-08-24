@@ -1,24 +1,5 @@
 [
-  {
-    "id": "1724354000716",
-    "name": "New Task 1",
-    "completed": false,
-    "owner": "1"
-  },
-  {
-    "id": "1724354003456",
-    "name": "Task 31",
-    "completed": false,
-    "owner": "1"
-  },
-  { "id": "1724354006263", "name": "Task 4", "completed": false, "owner": "1" },
-  { "id": "1724354008689", "name": "Task 5", "completed": false, "owner": "1" },
-  { "id": "1724354013720", "name": "Task 6", "completed": true, "owner": "2" },
-  { "id": "1724354013721", "name": "Task 7", "completed": true, "owner": "2" },
-  {
-    "id": "1724422024454",
-    "name": "Task 1011",
-    "completed": false,
-    "owner": "2"
-  }
+  { "id": "1724478726312", "name": "Task 2", "completed": false, "owner": "1" },
+  { "id": "1724478741119", "name": "Task 3", "completed": false, "owner": "1" },
+  { "id": "1724478746579", "name": "Task 4", "completed": false, "owner": "1" }
 ]

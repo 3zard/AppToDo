@@ -12,14 +12,14 @@ var routerMethods = {
       runMiddleWares(request, response, middlewares);
     }
   },
-  delete: function (request, response, path, callback) {
+  delete: function (request, response, path, middlewares) {
     if (path === url.parse(request.url, true).pathname && request.method === "DELETE") {
-      callback(request, response);
+      runMiddleWares(request, response, middlewares);
     }
   },
-  patch: function (request, response, path, callback) {
+  patch: function (request, response, path, middlewares) {
     if (path === url.parse(request.url, true).pathname && request.method === "PATCH") {
-      callback(request, response);
+      runMiddleWares(request, response, middlewares);
     }
   },
 };

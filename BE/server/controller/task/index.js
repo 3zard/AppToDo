@@ -69,6 +69,13 @@ async function createTask(request, response, userId) {
 
 async function updateTask(request, response, userId) {
   const body = await getBody(request);
+  if (!body) {
+    response.writeHead(StatusCode.BAD_REQUEST, {
+      "Content-Type": "application/json",
+    });
+    response.end(JSON.stringify({ error: "Invalid task data" }));
+    return;
+  }
   const { id, name, completed } = JSON.parse(body);
   try {
     const taskResponse = await fetch(`http://localhost:3001/task/read`, {
@@ -76,7 +83,7 @@ async function updateTask(request, response, userId) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ filter: { id, owner: userId } }),
+      body: JSON.stringify({ filter: { id: id, owner: userId } }),
     });
     if (!taskResponse.ok) {
       response.writeHead(StatusCode.NOT_FOUND, {
@@ -84,13 +91,19 @@ async function updateTask(request, response, userId) {
       });
       return response.end(JSON.stringify({ error: "Task not found" }));
     }
-
+    const taskResponseJson = await taskResponse.json();
+    const newTask = {
+      id: id.toString(),
+      name: name || taskResponseJson[0].name,
+      completed: completed || taskResponseJson[0].completed,
+      owner: userId,
+    };
     const updateResponse = await fetch(`http://localhost:3001/task/update`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ record: { ...body, owner: userId } }),
+      body: JSON.stringify({ record: newTask }),
     });
 
     if (!updateResponse.ok) {
@@ -99,9 +112,10 @@ async function updateTask(request, response, userId) {
       });
       return response.end(JSON.stringify({ error: "Failed to update task" }));
     }
-    const data = await taskListResponse.json();
-    response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
-    response.end(JSON.stringify(data.id));
+    response.writeHead(StatusCode.NO_CONTENT, {
+      "Content-Type": "application/json",
+    });
+    response.end();
   } catch (error) {
     console.error("Error creating task:", error);
   }
