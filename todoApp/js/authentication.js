@@ -1,3 +1,24 @@
+const apiUserURL = "http://localhost:3000/users";
+async function fetchAPIServer(apiURL, body) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const token = localStorage.getItem("token");
+    xhr.open('POST', `${apiURL}/register`, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.response);
+      } else {
+        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
+      }
+    };
+    xhr.onerror = function() {
+      alert(`Network Error`);
+    }
+    xhr.send(JSON.stringify(body));
+  })
+}
 // login signup
 if (!localStorage.getItem("users")) {
   localStorage.setItem("users", JSON.stringify([]));
@@ -12,23 +33,19 @@ function register() {
       alert("Repassword not match!");
       return;
     }
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    const userExists = users.some((user) => user.email === email);
-
-    if (userExists) {
-      alert("Email is already registered!");
-      return;
+    const registerUser = {
+      "username": email,
+      "password": password
     }
-
-    const newUser = {
-      email: email,
-      password: password,
-    };
-    users.push(newUser);
-
-    localStorage.setItem("users", JSON.stringify(users));
-    alert("Registration successful!");
-    window.location.href = "login.html";
+    try {
+      const registerRunner = fetchAPIServer(`${apiUserURL}/register`, registerUser)
+      alert("Registration successful!");
+      window.location.href = "login.html";
+    } 
+    catch (error) {
+      alert("Registration failed!");
+      console.error(error);
+    }
   } else {
     alert("Please fill in both email and password fields.");
     return;
@@ -41,23 +58,24 @@ function login() {
   const rememberMe = document.getElementById("rememberMe").checked;
 
   if (email !== "" && password !== "") {
-    let users = JSON.parse(localStorage.getItem("users") || []);
-    const user = users.find(
-      (user) => user.email === email && user.password === password
-    );
-
-    if (user) {
+    const loginUser = {
+      "username": email,
+      "password": password
+    }
+    try {
+      const loginRunner = fetchAPIServer(`${apiUserURL}/login`, loginUser);
+      localStorage.setItem("token", JSON.parse(loginRunner.token));
       alert("Login successful!");
-
       if (rememberMe) {
         localStorage.setItem("rememberedUser", JSON.stringify(user));
       } else {
         sessionStorage.setItem("currentUser", JSON.stringify(user));
       }
-
       window.location.href = "../index.html";
-    } else {
+    }
+    catch (error) {
       alert("Invalid email or password.");
+      console.error(error);
     }
   } else {
     alert("Please fill in both email and password fields.");
