@@ -35,7 +35,6 @@ async function getTaskList(request, response, userId) {
 }
 
 async function createTask(request, response, userId) {
-  console.log(userId);
   const body = JSON.parse(await getBody(request));
   const { name, completed } = body;
   if (!name || completed === null || completed === undefined) {
@@ -85,17 +84,13 @@ async function updateTask(request, response, userId) {
       });
       return response.end(JSON.stringify({ error: "Task not found" }));
     }
-    // const taskData = await taskResponse.json();
 
     const updateResponse = await fetch(`http://localhost:3001/task/update`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        filter: { id: userId },
-        record: { name, completed },
-      }),
+      body: JSON.stringify({ record: { ...body, owner: userId } }),
     });
 
     if (!updateResponse.ok) {
@@ -104,49 +99,41 @@ async function updateTask(request, response, userId) {
       });
       return response.end(JSON.stringify({ error: "Failed to update task" }));
     }
-
-    const updatedData = await updateResponse.json();
+    const data = await taskListResponse.json();
     response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
-    response.end(JSON.stringify());
+    response.end(JSON.stringify(data.id));
   } catch (error) {
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
-      "Content-Type": "application/json",
-    });
-    response.end(JSON.stringify({ error: "An error occurred" }));
+    console.error("Error creating task:", error);
   }
 }
 
-async function deleteTask(request, response) {
+async function deleteTask(request, response, userId) {
+  const body = await getBody(request);
+  const { id } = JSON.parse(body);
   try {
-    const urlParams = new URL(request.url, `http://${request.headers.host}`);
-    const taskId = urlParams.searchParams.get("taskId");
-
-    const taskResponse = await fetch(
-      `http://localhost:3001/task/read/id=${taskId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const taskResponse = await fetch(`http://localhost:3001/task/read`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ filter: { id, owner: userId } }),
+    });
 
     if (!taskResponse.ok) {
       response.writeHead(StatusCode.NOT_FOUND, {
-        "Content-Type": "application/json",
+        "Content-Type": "text/plain",
       });
-      return response.end(JSON.stringify({ error: "Task not found" }));
+      return response.end("Task not found");
     }
 
-    const deleteResponse = await fetch(
-      `http://localhost:3001/task/delete/${taskId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const deleteResponse = await fetch(`http://localhost:3001/task/delete`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, owner: userId }),
+    });
+
     if (!deleteResponse.ok) {
       response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
         "Content-Type": "application/json",
@@ -155,12 +142,9 @@ async function deleteTask(request, response) {
     }
 
     response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
-    response.end(JSON.stringify({ message: "Task deleted successfully" }));
+    response.end();
   } catch (error) {
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
-      "Content-Type": "application/json",
-    });
-    response.end(JSON.stringify({ error: "An error occurred" }));
+    console.error("Error deleteing task:", error);
   }
 }
 
