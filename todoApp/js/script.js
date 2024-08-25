@@ -1,19 +1,19 @@
-const apiURL = "http://localhost:3000/tasks";
+const apiTaskURL = "http://localhost:3000/tasks";
 //CRUD, C-addTask, R-filterTask, U-editTask, D-deleteTask
 async function fetchTaskList(id) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = localStorage.getItem('token');
     if (id) {
-      xhr.open("GET", `${apiURL}/${id}`, true);
+      xhr.open("GET", `${apiTaskURL}/${id}`, true);
     }
     else {
-      xhr.open("GET", `${apiURL}`, true);
+      xhr.open("GET", `${apiTaskURL}`, true);
     }
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.onload = function() {
-      if (xhr.status === 200) {
+      if (xhr.status >= 200 && xhr.status < 300) {
         resolve(xhr.response);
       } else {
         reject(`Error: ${xhr.status} - ${xhr.statusText}`);
@@ -23,9 +23,7 @@ async function fetchTaskList(id) {
       reject("Lỗi cmn: Network Error");
     };
 
-    xhr.send(JSON.stringify({
-      "collection": "task"
-    }));
+    xhr.send();
   });
 }
 
@@ -106,7 +104,7 @@ async function fetchTaskListForDeleting(id) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = localStorage.getItem('token');
-    xhr.open("DELETE", `${apiURL}/${id}`, true);
+    xhr.open("DELETE", `${apiTaskURL}/${id}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
@@ -141,7 +139,7 @@ async function fetchTaskListForEditing(id, body) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = localStorage.getItem('token');
-    xhr.open("PATCH", `${apiURL}/${id}`, true);
+    xhr.open("PATCH", `${apiTaskURL}/${id}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
@@ -183,7 +181,7 @@ async function fetchTaskListForFiltering(status) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = localStorage.getItem('token');
-    xhr.open("GET", `${apiURL}?status=${status}`, true);
+    xhr.open("GET", `${apiTaskURL}?s tatus=${status}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
@@ -216,7 +214,7 @@ async function fetchTaskListForToggling(id, body) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = localStorage.getItem('token');
-    xhr.open("PATCH", `${apiURL}/${id}`, true);
+    xhr.open("PATCH", `${apiTaskURL}/${id}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.onload = function() {
