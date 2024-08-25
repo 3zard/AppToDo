@@ -32,8 +32,8 @@ function tasks() {
 tasks.prototype.getTaskList = async function () {
   this.listTask = await fetchTaskList();
   console.log(this.listTask);
-  this.sortTask();
-  this.render(this.listTask);
+  this.sortTasks();
+  this.renderTaskList(this.listTask);
 }
 
 async function addTaskToServer(task) {
@@ -80,11 +80,11 @@ tasks.prototype.addTask = async function () {
     }
 };
 
-tasks.prototype.render = function (listArray) {
+tasks.prototype.renderTaskList = function (listArray) {
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
   taskList.innerHTML = listArray.map((item) => {
-      return ` <li><input onchange="newTaskList.toggleCompleted(${item.id}, ${item.completed})" type="checkbox" ${item.completed ? "checked" : ""}>
+      return ` <li><input onchange="newTaskList.toggleTaskStatus(${item.id}, ${item.completed})" type="checkbox" ${item.completed ? "checked" : ""}>
               <span>${item.name}</span>
               <button class="button" onclick="newTaskList.editTask(${item.id})">Edit</button>
               <button class="button" onclick="newTaskList.deleteTask(${item.id})">Delete</button>
@@ -172,10 +172,10 @@ tasks.prototype.filterTask = async function () {
   const renderList = this.listTask.filter((task) => {
     return filterStatus === "all" || (filterStatus === "done" && task.completed) || (filterStatus === "undone" && !task.completed);
   });
-  this.render(renderList);
+  this.renderTaskList(renderList);
 };
 
-tasks.prototype.toggleCompleted = async function (id, completed) {
+tasks.prototype.toggleTaskStatus = async function (id, completed) {
   try {
     const response = await editTaskToServer({id: id, completed: !completed});
     if (response.ok) {
@@ -189,7 +189,7 @@ tasks.prototype.toggleCompleted = async function (id, completed) {
   }
 };
 
-tasks.prototype.sortTask = function () {
+tasks.prototype.sortTasks = function () {
   this.listTask.sort(function (task1, task2) {
     if (task1.completed != task2.completed) {
       return task1.completed - task2.completed;
