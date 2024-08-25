@@ -1,11 +1,13 @@
-const apiUserURL = "http://localhost:3000/users";
-async function fetchAPIServer(apiURL, body) {
+const apiUserURL = "http://localhost:3000";
+async function fetchAPIServer(apiURL, body, subpath) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    const token = localStorage.getItem("token");
-    xhr.open('POST', `${apiURL}/register`, true);
+    xhr.open('POST', `${apiURL}/${subpath}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    if (subpath === "login") {
+      const token = localStorage.getItem("token");
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    }
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
         resolve(xhr.response);
@@ -23,7 +25,12 @@ async function fetchAPIServer(apiURL, body) {
 if (!localStorage.getItem("users")) {
   localStorage.setItem("users", JSON.stringify([]));
 }
-function register() {
+async function register(event) {
+  if (event) {
+    console.log(event);
+    event.preventDefault();
+    event.stopPropagation();
+  }
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
   const repassword = document.getElementById("repassword").value;
@@ -38,9 +45,13 @@ function register() {
       "password": password
     }
     try {
-      const registerRunner = fetchAPIServer(`${apiUserURL}/register`, registerUser)
+      const registerRunner = await fetchAPIServer(`${apiUserURL}`, registerUser, "register");
       alert("Registration successful!");
-      window.location.href = "login.html";
+      if (registerRunner) {
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 0);
+      }
     } 
     catch (error) {
       alert("Registration failed!");
@@ -52,7 +63,7 @@ function register() {
   }
 }
 
-function login() {
+async function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   const rememberMe = document.getElementById("rememberMe").checked;
@@ -63,13 +74,15 @@ function login() {
       "password": password
     }
     try {
-      const loginRunner = fetchAPIServer(`${apiUserURL}/login`, loginUser);
-      localStorage.setItem("token", JSON.parse(loginRunner.token));
+      const userJson = await fetchAPIServer(`${apiUserURL}`, loginUser, "login");
+      const parsedUser = JSON.parse(userJson);
+      localStorage.setItem("token", parsedUser.token);
+      console.log(parsedUser.username);
       alert("Login successful!");
       if (rememberMe) {
-        localStorage.setItem("rememberedUser", JSON.stringify(user));
+        localStorage.setItem("rememberedUser", JSON.stringify(parsedUser.username));
       } else {
-        sessionStorage.setItem("currentUser", JSON.stringify(user));
+        sessionStorage.setItem("currentUser", JSON.stringify(parsedUser.username));
       }
       window.location.href = "../index.html";
     }
