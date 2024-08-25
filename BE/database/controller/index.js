@@ -36,10 +36,6 @@ async function readDataBase(request, response) {
     }
     return match;
   });
-  if (filteredRecords.length === 0) {
-    handleNotFound(request, response);
-    return;
-  }
   response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
   response.write(JSON.stringify(filteredRecords));
   response.end();
