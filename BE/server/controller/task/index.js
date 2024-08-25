@@ -75,9 +75,9 @@ async function updateTask(request, response, userId) {
   const body = await getBody(request);
   if (!body) {
     response.writeHead(StatusCode.BAD_REQUEST, {
-      "Content-Type": "text/plain",
+      "Content-Type": "application/json",
     });
-    response.end("Invalid task data");
+    response.end(JSON.stringify({ error: "No body" }));
     return;
   }
   const { id, name, completed } = JSON.parse(body);
@@ -91,9 +91,9 @@ async function updateTask(request, response, userId) {
     });
     if (!taskResponse.ok) {
       response.writeHead(StatusCode.NOT_FOUND, {
-        "Content-Type": "text/plain",
+        "Content-Type": "application/json",
       });
-      return response.end("Task not found");
+      return response.end(JSON.stringify({ error: "Task not found" }));
     }
     const taskResponseJson = await taskResponse.json();
     const newTask = {
