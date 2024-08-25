@@ -1,90 +1,86 @@
 const apiTaskURL = "http://localhost:3000/tasks";
 //CRUD, C-addTask, R-filterTask, U-editTask, D-deleteTask
 async function fetchTaskList(id) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
+  try {
     const token = localStorage.getItem('token');
-    if (id) {
-      xhr.open("GET", `${apiTaskURL}/${id}`, true);
-    }
-    else {
-      xhr.open("GET", `${apiTaskURL}`, true);
-    }
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-    xhr.onload = function() {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.response);
-      } else {
-        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
+    const url = id ? `${apiTaskURL}/${id}` : apiTaskURL;
+    const response = await fetch(`${url}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       }
-    };
-    xhr.onerror = function() {
-      reject("Lỗi cmn: Network Error");
-    };
-
-    xhr.send();
-  });
+    });
+    if (response.ok) {
+      return response.json();
+    } 
+    else {  
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+  }
+  catch (error) {
+    throw new Error("Network Error");
+  }
+  
 }
 
 function tasks() {
   this.listTask = [];
-  // this.idCounter = 0;
 }
 
 // get task list
 tasks.prototype.getTaskList = async function () {
   this.listTask = await fetchTaskList();
+  this.render(this.listTask);
 }
 
-async function fetchTaskListForAdding(body) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const token = localStorage.getItem('token');
-    xhr.open("POST", `${apiURL}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-    xhr.send(JSON.stringify(body));
-    xhr.onload = function() {
-      if (xhr.status === 201) {
-        resolve(xhr.response);
-      } else {
-        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
-      }
-    };
-    xhr.onerror = function() {
-      reject("Lỗi cmn: Network Error");
-    };
+async function addTaskToServer(task) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${apiTaskURL}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(task)
   });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+  }
+
+  return response;
 }
 
-tasks.prototype.addTask = function () {
+tasks.prototype.addTask = async function () {
   const taskName = document.getElementById("inputValue").value.trim();
   if (taskName !== "") {
-    const filterStatus = document.getElementById("filter").value;
-    const newTask = {
-      name: taskName,
-      completed: filterStatus == "done",
-    };
     try {
-      const addRunner = fetchTaskListForAdding(newTask);
-      this.getTaskList();
-      // this.cancelTask();
-      this.sortTask();
-      this.filterTask();
-      alert("Add successful!");
+      const filterStatus = document.getElementById("filter").value;
+      const newTask = {
+        name: taskName,
+        completed: filterStatus == "done",
+      };
+      const response = await addTaskToServer(newTask);
+      if (response.ok) {
+        this.getTaskList();
+        // this.render(this.listTask);
+      } else {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
     }
     catch (error) {
+      console.log(error);
       alert("Add failed!");
     }
     } else {
-      alert("already have this task");
+      alert("Task name is empty!");
       cancelTask();
     }
-  // }
 };
 
 tasks.prototype.render = function (listArray) {
+  console.log(listArray);
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
   taskList.innerHTML = listArray.map((item) => {
@@ -98,74 +94,70 @@ tasks.prototype.render = function (listArray) {
 
 tasks.prototype.cancelTask = function () {
   document.getElementById("inputValue").value = "";
+  console.log(this.listTask);
 };
 
-async function fetchTaskListForDeleting(id) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const token = localStorage.getItem('token');
-    xhr.open("DELETE", `${apiTaskURL}/${id}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-    xhr.onload = function() {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.response);
-      } else {
-        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
-      }
-    };
-    xhr.onerror = function() {
-      reject("Lỗi cmn: Network Error");
-    };
-
-    xhr.send();
+async function deleteTaskToServer(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${apiTaskURL}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ id: id })
   });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+  }
+
+  return response;
 }
 
 tasks.prototype.deleteTask = async function (id) {
   try {
-    const deleteRunner = await fetchTaskListForDeleting(id);
-    alert("Delete successful!");
-    this.getTaskList();
-    this.render(this.listTask);
+    const response = await deleteTaskToServer(id);
+    if (response.ok) {
+      this.getTaskList();
+      // this.render(this.listTask);
+    } else {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
   }
   catch (error) {
     alert("Delete failed!");
   }
 };
 
-async function fetchTaskListForEditing(id, body) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const token = localStorage.getItem('token');
-    xhr.open("PATCH", `${apiTaskURL}/${id}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-    xhr.onload = function() {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.response);
-      } else {
-        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
-      }
-    };
-    xhr.onerror = function() {
-      reject("Lỗi cmn: Network Error");
-    };
-
-    xhr.send(JSON.stringify(body));
+async function editTaskToServer(body) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${apiTaskURL}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(body)
   });
+
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status} - ${response.statusText}`);
+  }
+
+  return response;
 }
 
 tasks.prototype.editTask = async function (id) {
-  const newTaskName = prompt("Change your task here", task.name);
+  const newTaskName = prompt("Change your task here");
   if (newTaskName !== null && newTaskName.trim() !== "") {
     try {
-      const editRunner = await fetchTaskListForEditing(id, {name: newTaskName.trim()});
-      alert("Edit successful!");
-      this.getTaskList();
-      this.render(this.listTask);
+      const response = await editTaskToServer({id: id, name: newTaskName.trim()});
+      if (response.ok) {
+        this.getTaskList();
+      } else {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
     }
     catch (error) {
       alert("Already have this task !");
@@ -181,7 +173,7 @@ async function fetchTaskListForFiltering(status) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const token = localStorage.getItem('token');
-    xhr.open("GET", `${apiTaskURL}?s tatus=${status}`, true);
+    xhr.open("GET", `${apiTaskURL}?status=${status}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
