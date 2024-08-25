@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { StatusCode } = require("../constans/status.js");
+const { StatusCode } = require("../constant/status.js");
 
 function handleNotFound(request, response) {
   response.writeHead(StatusCode.NOT_FOUND, { "Content-Type": "text/plain" });
