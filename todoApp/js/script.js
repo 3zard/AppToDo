@@ -31,6 +31,8 @@ function tasks() {
 // get task list
 tasks.prototype.getTaskList = async function () {
   this.listTask = await fetchTaskList();
+  console.log(this.listTask);
+  this.sortTask();
   this.render(this.listTask);
 }
 
@@ -64,7 +66,6 @@ tasks.prototype.addTask = async function () {
       const response = await addTaskToServer(newTask);
       if (response.ok) {
         this.getTaskList();
-        // this.render(this.listTask);
       } else {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
@@ -80,11 +81,10 @@ tasks.prototype.addTask = async function () {
 };
 
 tasks.prototype.render = function (listArray) {
-  console.log(listArray);
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
   taskList.innerHTML = listArray.map((item) => {
-      return ` <li><input onchange="newTaskList.toggleCompleted(${item.id})" type="checkbox" ${item.completed ? "checked" : ""}>
+      return ` <li><input onchange="newTaskList.toggleCompleted(${item.id}, ${item.completed})" type="checkbox" ${item.completed ? "checked" : ""}>
               <span>${item.name}</span>
               <button class="button" onclick="newTaskList.editTask(${item.id})">Edit</button>
               <button class="button" onclick="newTaskList.deleteTask(${item.id})">Delete</button>
@@ -94,7 +94,6 @@ tasks.prototype.render = function (listArray) {
 
 tasks.prototype.cancelTask = function () {
   document.getElementById("inputValue").value = "";
-  console.log(this.listTask);
 };
 
 async function deleteTaskToServer(id) {
@@ -120,7 +119,6 @@ tasks.prototype.deleteTask = async function (id) {
     const response = await deleteTaskToServer(id);
     if (response.ok) {
       this.getTaskList();
-      // this.render(this.listTask);
     } else {
       throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
@@ -169,70 +167,22 @@ tasks.prototype.editTask = async function (id) {
 };
 
 
-async function fetchTaskListForFiltering(status) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const token = localStorage.getItem('token');
-    xhr.open("GET", `${apiTaskURL}?status=${status}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-    xhr.onload = function() {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.response);
-      } else {
-        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
-      }
-    };
-    xhr.onerror = function() {
-      reject("Lỗi cmn: Network Error");
-    };
-    xhr.send();
-  });
-}
-
 tasks.prototype.filterTask = async function () {
   const filterStatus = document.getElementById("filter").value;
-  try {
-    const data = await fetchTaskListForFiltering(filterStatus);
-    this.render(JSON.parse(data));
-  }
-  catch (error) {
-    console.log(error);
-  }
+  const renderList = this.listTask.filter((task) => {
+    return filterStatus === "all" || (filterStatus === "done" && task.completed) || (filterStatus === "undone" && !task.completed);
+  });
+  this.render(renderList);
 };
 
-async function fetchTaskListForToggling(id, body) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const token = localStorage.getItem('token');
-    xhr.open("PATCH", `${apiTaskURL}/${id}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-    xhr.onload = function() {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.response);
-      } else {
-        reject(`Error: ${xhr.status} - ${xhr.statusText}`);
-      }
-    };
-    xhr.onerror = function() {
-      reject("Lỗi cmn: Network Error");
-    }
-    xhr.send(JSON.stringify(body));
-  });
-}
-
-tasks.prototype.toggleCompleted = function (id) {
-  // this.listTask.forEach((item) =>
-  //   item.id === id ? (item.completed = !item.completed) : ""
-  // );
-  const completedRunner = JSON.parse(fetchTaskList(id));
+tasks.prototype.toggleCompleted = async function (id, completed) {
   try {
-    const toggleRunner = fetchTaskListForToggling(id, {completed: !completedRunner.completed});
-    alert("Toggle successful!");
-    this.sortTask();
-    this.filterTask();
+    const response = await editTaskToServer({id: id, completed: !completed});
+    if (response.ok) {
+      this.getTaskList();
+    } else {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
   }
   catch (error) {
     alert("Toggle failed!");

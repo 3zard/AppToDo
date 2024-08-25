@@ -1,5 +1,5 @@
 const {  getBody, encodeBase64 } = require("../../utils/helper.js");
-const { StatusCode } = require("../../constans/status.js");
+const { StatusCode } = require("../../constant/status.js");
 
 async function login(request, response) {
   const body = JSON.parse(await getBody(request));

@@ -1,5 +1,5 @@
 const { decodeBase64 } = require("../utils/helper");
-const { StatusCode } = require("../constans/status");
+const { StatusCode } = require("../constant/status");
 
 function runMiddleWares(request, response, middlewares) {
   let index = 0;

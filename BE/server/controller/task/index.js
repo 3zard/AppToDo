@@ -1,10 +1,9 @@
 const { writeFile, getBody, handleNotFound } = require("../../utils/helper.js");
-const { StatusCode, getStatusCondition } = require("../../constans/status.js");
+const { StatusCode, getStatusCondition } = require("../../constant/status.js");
 
 async function getTaskList(request, response, userId) {
   try {
     const status = request.url.split("?status=")[1] || getStatusCondition.All;
-    console.log(status);
     let requestBody;
     status === getStatusCondition.All
       ? (requestBody = { filter: { owner: userId } })
@@ -14,7 +13,7 @@ async function getTaskList(request, response, userId) {
             owner: userId,
           },
         });
-      console.log(requestBody);
+        // console.log(requestBody);
     const taskList = await fetch(`http://localhost:3001/task/read`, {
       method: "POST",
       headers: {
