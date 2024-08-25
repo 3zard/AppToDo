@@ -29,7 +29,7 @@ async function readDataBase(request, response) {
   const filteredRecords = records.filter((record) => {
     let match = true;
     for (const key in filter) {
-      if (record[key] !== filter[key].toString()) {
+      if (record[key].toString() !== filter[key].toString()) {
         match = false;
         break;
       }
