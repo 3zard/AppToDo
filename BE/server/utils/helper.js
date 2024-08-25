@@ -45,4 +45,3 @@ module.exports = {
   encodeBase64,
   decodeBase64,
 };
-
