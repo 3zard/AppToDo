@@ -1,0 +1,12 @@
+@startuml editTask Controller activity
+start
+:Receive request from router; 
+if (new data = old data ?) then (yes)
+    : Response status code: error 406 (Not Acceptable);
+    : nofication conflict: "This  is exited";
+else (no)
+    :Save new edit task
+    :Response status code: 201 (Created);
+endif
+stop
+@enduml

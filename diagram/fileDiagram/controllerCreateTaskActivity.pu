@@ -1,0 +1,11 @@
+@startuml createTask Controller activity
+start
+:Receive request from router; 
+if (check validate input ?) then (no)
+    :Response status code: error 400(Bad Request);
+else (yes)
+    :Save new task;
+    :Response  status code: 201 (Created);
+endif
+stop
+@enduml

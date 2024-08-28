@@ -1,0 +1,10 @@
+@startuml filterTask Controller activity
+start
+:Receive request from router; 
+if (check value of status tasks) then (no)
+    :Response status code: error 400(Bad Request);
+else (yes)
+   :Response status code: 200 (OK) and tasks list data;
+endif
+stop
+@enduml
