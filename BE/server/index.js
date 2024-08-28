@@ -1,6 +1,7 @@
 const router = require("./router/index.js");
 const createServer = require("http").createServer;
 
+
 const server = createServer((request, response) => {
   // Set CORS headers
   response.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins, or specify a particular origin
@@ -19,3 +20,7 @@ const server = createServer((request, response) => {
 server.listen(3000, "localhost", () => {
   console.log("Listening on localhost:3000");
 });
+
+
+
+
