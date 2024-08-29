@@ -1,5 +1,8 @@
 const { getBody, encodeBase64 } = require("../../utils/helper.js");
 const { StatusCode } = require("../../constant/status.js");
+const { MongoClient } = require("mongodb");
+const uri = "mongodb+srv://phong:tp0yu8xGw7EVbRHq@mongo.pvtl6.mongodb.net/";
+const client = new MongoClient(uri);
 
 async function login(request, response) {
   const body = JSON.parse(await getBody(request));
@@ -11,26 +14,30 @@ async function login(request, response) {
     response.end(JSON.stringify({ error: "Missing username or password" }));
     return;
   }
-  const user = await fetch("http://localhost:3001/user/read", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ filter: { ...body } }),
-  });
-  if (!user.ok) {
-    response.writeHead(StatusCode.UNAUTHORIZED, {
+  try {
+    const database = client.db("todoapp");
+    const users = database.collection("users");
+    const query = { username: username, password: password };
+    const user = await users.find(query).toArray();
+
+    if (user.length === 0) {
+      response.writeHead(StatusCode.NOT_FOUND, {
+        "Content-Type": "application/json",
+      });
+      response.end(JSON.stringify({ message: "User not found" }));
+      return;
+    }
+
+    const userID = user[0]._id;
+    response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
+    response.end(JSON.stringify({ token: encodeBase64(userID) }));
+  } catch (error) {
+    console.error("Error reading database:", error);
+    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
-    response.end(JSON.stringify({ error: "Invalid username or password" }));
-    return;
+    response.end(JSON.stringify({ message: "Internal Server Error" }));
   }
-  const data = await user.json();
-  const userID = data[0].id;
-  response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
-  response.end(
-    JSON.stringify({ username: data[0].username, token: encodeBase64(userID) })
-  );
 }
 async function register(request, response) {
   const body = JSON.parse(await getBody(request));
