@@ -40,6 +40,11 @@ async function register(event) {
       alert("Repeat password not match!");
       return;
     }
+    
+    if (!checkValidEmail(email)) {
+      return;
+    }
+
     const registerUser = {
       username: email,
       password: password,

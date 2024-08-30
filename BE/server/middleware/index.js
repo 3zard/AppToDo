@@ -1,8 +1,8 @@
 const { decodeBase64 } = require("../utils/helper");
 const { StatusCode } = require("../constant/status");
 const { MongoClient, ObjectId } = require("mongodb");
-const uri = "mongodb+srv://phong:tp0yu8xGw7EVbRHq@mongo.pvtl6.mongodb.net/";
-const client = new MongoClient(uri);
+const { url } = require("../constant/status.js");
+const client = new MongoClient(url.connectMongodb);
 
 function runMiddleWares(request, response, middlewares) {
   let index = 0;

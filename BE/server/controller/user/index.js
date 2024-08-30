@@ -44,9 +44,9 @@ async function login(request, response) {
 async function register(request, response) {
   try {
     const body = JSON.parse(await getBody(request));
-    const { username, password, repeatPassword } = body;
+    const {username, password} = body;
 
-    if (!username || !password || !repeatPassword)  {
+    if (!username || !password)  {
       response.writeHead(StatusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
@@ -56,25 +56,15 @@ async function register(request, response) {
 
     const database = client.db("todoapp");
     const users = database.collection("users");
-    const existingUser = await users.find({ username: username }).toArray();
-    if (existingUser.length > 0) {
+    const existingUser = await users.findOne({ username: username });
+    if (existingUser) {
       response.writeHead(StatusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Username already exists" }));
       return;
     }
-    if (repeatPassword !== password) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
-        "Content-Type": "application/json",
-      });
-      response.end(
-        JSON.stringify({ error: "Repeat-password must equal password" })
-      );
-      return;
-    }
     await users.insertOne({ username, password });
-
     response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
     response.end(JSON.stringify({ message: "User registered successfully" }));
   } catch (error) {
@@ -85,7 +75,6 @@ async function register(request, response) {
     response.end(JSON.stringify({ error: "Cannot register" }));
   }
 }
-
 
 module.exports = {
   login,
