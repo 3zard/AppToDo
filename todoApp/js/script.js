@@ -1,3 +1,7 @@
+const statusFilter = {
+  done: "done",
+  undone: "undone",
+};
 const apiTaskURL = "http://localhost:3000/tasks";
 //CRUD, C-addTask, R-filterTasks, U-editTask, D-deleteTask
 async function fetchTaskList(id) {
@@ -29,7 +33,8 @@ function tasks() {
 tasks.prototype.getTaskList = async function () {
   this.listTask = await fetchTaskList();
   this.sortTasks();
-  this.renderTaskList(this.listTask);
+  this.filterTasks();
+  this.cancelTask();
 };
 
 async function addTaskToServer(task) {
@@ -57,7 +62,7 @@ tasks.prototype.addTask = async function () {
       const filterStatus = document.getElementById("filter").value;
       const newTask = {
         name: taskName,
-        completed: filterStatus == "done",
+        completed: filterStatus === statusFilter.done,
       };
       const response = await addTaskToServer(newTask);
       if (response.ok) {
@@ -246,6 +251,7 @@ document.getElementById("filter").addEventListener("change", function () {
 });
 
 window.onload = function () {
+  console.log("onload");
   const rememberedUser = JSON.parse(localStorage.getItem("rememberedUser"));
   const currentSessionUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const currentPage = window.location.pathname.split("/").pop();

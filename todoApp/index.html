@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDoApp</title>
     <link rel="stylesheet" href="./css/todo-app-form.css" />
-    <script src="./js/script.js" defer></script>
     <script src="./js/authentication.js" defer></script>
-
+    <script src="./js/script.js" defer></script>
   </head>
   <body>
     <div class="todo-app">
       <h1 class="todo-app__greeting" id="greeting"></h1>
       <div class="todo-app__logo">
-        <img class="todo-app__logo-image" src="./img/todo.png" alt="TODO Logo" />
+        <img
+          class="todo-app__logo-image"
+          src="./img/todo.png"
+          alt="TODO Logo"
+        />
         <h1 class="todo-app__title">TODO</h1>
       </div>
       <div class="todo-app__form">
@@ -24,14 +27,23 @@
           id="input-value"
           placeholder="Task name..."
         />
-        <button class="todo-app__button todo-app__button--add" id="add-button">Add</button>
-        <button class="todo-app__button todo-app__button--cancel" id="cancel-button">Cancel</button>
+        <button class="todo-app__button todo-app__button--add" id="add-button">
+          Add
+        </button>
+        <button
+          class="todo-app__button todo-app__button--cancel"
+          id="cancel-button"
+        >
+          Cancel
+        </button>
       </div>
       <ul class="todo-app__task-list" id="task-list"></ul>
       <div class="todo-app__filter">
         <label class="todo-app__filter-label" for="filter">Filter:</label>
         <select class="todo-app__filter-select" id="filter">
-          <option class="todo-app__filter-option" value="all" selected>All</option>
+          <option class="todo-app__filter-option" value="all" selected>
+            All
+          </option>
           <option class="todo-app__filter-option" value="undone">Undone</option>
           <option class="todo-app__filter-option" value="done">Done</option>
         </select>
