@@ -21,10 +21,7 @@ async function fetchAPIServer(apiURL, body, subpath) {
     xhr.send(JSON.stringify(body));
   });
 }
-// login signup
-if (!localStorage.getItem("users")) {
-  localStorage.setItem("users", JSON.stringify([]));
-}
+
 async function register(event) {
   if (event) {
     console.log(event);
@@ -40,7 +37,7 @@ async function register(event) {
       alert("Repeat password not match!");
       return;
     }
-    
+
     if (!checkValidEmail(email)) {
       return;
     }
@@ -89,7 +86,6 @@ async function login() {
       );
       const parsedUser = JSON.parse(userJson);
       localStorage.setItem("token", parsedUser.token);
-      console.log(parsedUser.username);
       alert("Login successful!");
       if (rememberMe) {
         localStorage.setItem(
@@ -115,6 +111,7 @@ async function login() {
 //logout
 function logout() {
   localStorage.removeItem("rememberedUser");
+  localStorage.removeItem("token");
   sessionStorage.removeItem("currentUser");
   alert("Logout successful!");
   window.location.href = "./html/login.html";
