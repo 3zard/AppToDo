@@ -28,7 +28,6 @@ function tasks() {
 // get task list
 tasks.prototype.getTaskList = async function () {
   this.listTask = await fetchTaskList();
-  console.log(this.listTask);
   this.sortTasks();
   this.renderTaskList(this.listTask);
 };
@@ -79,11 +78,11 @@ tasks.prototype.addTask = async function () {
 tasks.prototype.renderTaskList = function (listArray) {
   const taskList = document.getElementById("task-list");
   taskList.innerHTML = "";
-  
+
   listArray.forEach((item) => {
     const li = document.createElement("li");
     li.className = "todo-app__task-list-item";
-    
+
     const checkbox = document.createElement("input");
     checkbox.className = "todo-app__checkbox";
     checkbox.type = "checkbox";
@@ -114,12 +113,10 @@ tasks.prototype.renderTaskList = function (listArray) {
     li.appendChild(span);
     li.appendChild(editButton);
     li.appendChild(deleteButton);
-    
+
     taskList.appendChild(li);
   });
 };
-
-
 
 tasks.prototype.cancelTask = function () {
   document.getElementById("input-value").value = "";
@@ -189,7 +186,7 @@ tasks.prototype.editTask = async function (id) {
       }
     } catch (error) {
       alert("Already have this task !");
-    } 
+    }
   } else {
     alert("Edit failed!");
   }
@@ -225,7 +222,7 @@ tasks.prototype.sortTasks = function () {
     if (task1.completed != task2.completed) {
       return task1.completed - task2.completed;
     }
-    return (task1.name) && !isNaN(task2.name)
+    return task1.name && !isNaN(task2.name)
       ? task1.name - task2.name
       : task1.name.localeCompare(task2.name);
   });

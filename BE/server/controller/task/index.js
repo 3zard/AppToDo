@@ -1,6 +1,6 @@
 const { writeFile, getBody, handleNotFound } = require("../../utils/helper.js");
 const { StatusCode} = require("../../constant/status.js");
-const {MongoClient} = require("mongodb");
+const {MongoClient, ObjectId} = require("mongodb");
 const { url } = require("../../constant/status.js");
 const client = new MongoClient(url.connectMongodb);
 
@@ -31,7 +31,6 @@ async function getTaskList(request, response, userId) {
 }
 
 async function createTask(request, response, userId) {
-  // const userId = "66cf20beddecf0573578eeb9";
   try {
     const body = JSON.parse(await getBody(request));
     const { name, completed } = body;
@@ -73,7 +72,6 @@ async function createTask(request, response, userId) {
 }
 
 async function updateTask(request, response, userId) {
-  console.log("here");
   try {
     const updateBody = JSON.parse(await getBody(request));
     const { id, name, completed } = updateBody;
