@@ -1,9 +1,11 @@
 * {
   box-sizing: border-box;
 }
+
 .container {
   background-color: white;
 }
+
 .form-register,
 .form-login {
   margin: auto;
@@ -11,6 +13,7 @@
   padding: 16px;
   border: 1px solid;
 }
+
 input[type="text"],
 input[type="password"] {
   width: 100%;
@@ -31,6 +34,7 @@ input[type="password"] {
   width: 100%;
   opacity: 0.9;
 }
+
 .button:hover {
   opacity: 1.5;
 }

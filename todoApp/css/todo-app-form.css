@@ -1,4 +1,7 @@
-.container {
+/* BEM CSS */
+
+/* Container */
+.todo-app {
   margin: auto;
   width: 1280px;
   text-align: center;
@@ -8,24 +11,33 @@
   display: flex;
   flex-flow: column nowrap;
 }
-.container-logo {
+
+/* Logo */
+.todo-app__logo {
   width: 100%;
   text-align: center;
 }
-.container-logo img {
+
+.todo-app__logo-image {
   width: 40%;
 }
-input[type="text"] {
+
+/* Input Field */
+.todo-app__input {
   height: 30px;
   width: 230px;
 }
-input[type="checkbox"] {
+
+/* Checkbox */
+.todo-app__checkbox {
   padding: 10px;
 }
-.button,
-.edit-button,
-.delete-button,
-.button-logout {
+
+/* Buttons */
+.todo-app__button,
+.todo-app__button--edit,
+.todo-app__button--delete,
+.todo-app__button--logout {
   color: white;
   background-color: #04aa6d;
   border: none;
@@ -35,24 +47,28 @@ input[type="checkbox"] {
   opacity: 0.9;
 }
 
-.button:hover {
+.todo-app__button:hover {
   opacity: 1.5;
 }
 
-/* task */
-#taskList {
+/* Task List */
+.todo-app__task-list {
   margin: 20px auto;
   height: auto;
   list-style-type: none;
   box-sizing: border-box;
 }
-#taskList li {
+
+.todo-app__task-list-item {
   display: flex;
 }
-#taskList span {
+
+.todo-app__task-list-item-text {
   flex-grow: 1;
   margin: auto 10px;
 }
-.right {
+
+/* Right Align */
+.todo-app__right {
   float: right;
 }
