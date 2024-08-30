@@ -1,5 +1,5 @@
 const apiTaskURL = "http://localhost:3000/tasks";
-//CRUD, C-addTask, R-filterTask, U-editTask, D-deleteTask
+//CRUD, C-addTask, R-filterTasks, U-editTask, D-deleteTask
 async function fetchTaskList(id) {
   try {
     const token = localStorage.getItem("token");
@@ -192,7 +192,7 @@ tasks.prototype.editTask = async function (id) {
   }
 };
 
-tasks.prototype.filterTask = async function () {
+tasks.prototype.filterTasks = async function () {
   const filterStatus = document.getElementById("filter").value;
   const renderList = this.listTask.filter((task) => {
     return (
@@ -242,7 +242,7 @@ document.getElementById("cancel-button").addEventListener("click", function () {
 });
 
 document.getElementById("filter").addEventListener("change", function () {
-  newTaskList.filterTask();
+  newTaskList.filterTasks();
 });
 
 window.onload = function () {
