@@ -1,5 +1,8 @@
 const { decodeBase64 } = require("../utils/helper");
 const { StatusCode } = require("../constant/status");
+const { MongoClient, ObjectId } = require("mongodb");
+const uri = "mongodb+srv://phong:tp0yu8xGw7EVbRHq@mongo.pvtl6.mongodb.net/";
+const client = new MongoClient(uri);
 
 function runMiddleWares(request, response, middlewares) {
   let index = 0;
@@ -27,18 +30,15 @@ async function checkToken(request, response, next) {
   }
   const token = decodeBase64(encodeToken);
   try {
-    const user = await fetch("http://localhost:3001/user/read", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ "filter": { id: token } })
-    });
-    if (!user.ok) {
+    const database = client.db("todoapp");
+    const users = database.collection("users");
+    const query = { _id: new ObjectId(token) };
+    const user = await users.findOne(query);
+    if (!user) {
       response.writeHead(StatusCode.UNAUTHORIZED, {
         "Content-Type": "application/json",
       });
-      response.end(JSON.stringify({ error: "Token is invalid" }));
+      response.end(JSON.stringify({ error: "Invalid token" }));
       return;
     }
     next(token);

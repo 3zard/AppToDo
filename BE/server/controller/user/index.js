@@ -31,7 +31,7 @@ async function login(request, response) {
     }
     const userID = user._id.toString();
     response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
-    response.end(JSON.stringify({ token: encodeBase64(userID) }));
+    response.end(JSON.stringify({ token: encodeBase64(userID), ...user }));
   } catch (error) {
     console.error("Error during login:", error);
     response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {

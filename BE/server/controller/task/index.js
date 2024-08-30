@@ -5,7 +5,6 @@ const { url } = require("../../constant/status.js");
 const client = new MongoClient(url.connectMongodb);
 
 async function getTaskList(request, response, userId) {
-  // const userId = "66cf20beddecf0573578eeb9"
   try {
     const query = { owner: userId };
     const database = client.db("todoapp");
@@ -15,6 +14,7 @@ async function getTaskList(request, response, userId) {
     if (task) {
       response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
       response.end(JSON.stringify(task));
+      
     } else {
       response.writeHead(StatusCode.NOT_FOUND, {
         "Content-Type": "application/json",
@@ -72,9 +72,8 @@ async function createTask(request, response, userId) {
   }
 }
 
-async function updateTask(request, response) {
-  const userId = "66cf20beddecf0573578eeb9";
-
+async function updateTask(request, response, userId) {
+  console.log("here");
   try {
     const updateBody = JSON.parse(await getBody(request));
     const { id, name, completed } = updateBody;
@@ -84,7 +83,7 @@ async function updateTask(request, response) {
       _id: new ObjectId(id),
       owner: userId,
     });
-
+    
     if (!existingTask) {
       response.writeHead(StatusCode.NOT_FOUND, {
         "Content-Type": "application/json",
@@ -94,7 +93,7 @@ async function updateTask(request, response) {
     }
     const result = await taskCollection.updateOne(
       { _id: new ObjectId(id), owner: userId },
-      { $set: { name: name, completed: completed } }
+      { $set: { name: name || existingTask.name, completed: completed !== undefined ?  completed : existingTask.completed } }
     );
 
     if (result.matchedCount === 0) {
@@ -118,7 +117,6 @@ async function updateTask(request, response) {
 }
 
 async function deleteTask(request, response, userId) {
-  // const userId = "66cf20beddecf0573578eeb9";
   try {
     const body = JSON.parse(await getBody(request));
     const { id } = body;

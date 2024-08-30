@@ -6,36 +6,45 @@
     <title>ToDoApp</title>
     <link rel="stylesheet" href="./css/todo-app-form.css" />
     <script src="./js/script.js" defer></script>
+    <script src="./js/authentication.js" defer></script>
+
   </head>
   <body>
-    <div class="container">
-      <h1 id="greeting"></h1>
-      <div class="container-logo">
-        <img src="./img/todo.png" alt="" />
-        <h1>TODO</h1>
+    <div class="todo-app">
+      <h1 class="todo-app__greeting" id="greeting"></h1>
+      <div class="todo-app__logo">
+        <img class="todo-app__logo-image" src="./img/todo.png" alt="TODO Logo" />
+        <h1 class="todo-app__title">TODO</h1>
       </div>
-      <div class="form-input">
+      <div class="todo-app__form">
         <input
+          class="todo-app__input"
           type="text"
           name="inputName"
-          id="inputValue"
+          id="input-value"
           placeholder="Task name..."
         />
-        <button class="button" id="addButton">Add</button>
-        <button class="button" id="cancelButton">Cancel</button>
+        <button class="todo-app__button todo-app__button--add" id="add-button">Add</button>
+        <button class="todo-app__button todo-app__button--cancel" id="cancel-button">Cancel</button>
       </div>
-      <ul id="taskList"></ul>
-      <div class="filter">
-        <label for="">Filter :</label>
-        <select id="filter">
-          <option value="all" selected>All</option>
-          <option value="undone">Undone</option>
-          <option value="done">Done</option>
+      <ul class="todo-app__task-list" id="task-list"></ul>
+      <div class="todo-app__filter">
+        <label class="todo-app__filter-label" for="filter">Filter:</label>
+        <select class="todo-app__filter-select" id="filter">
+          <option class="todo-app__filter-option" value="all" selected>All</option>
+          <option class="todo-app__filter-option" value="undone">Undone</option>
+          <option class="todo-app__filter-option" value="done">Done</option>
         </select>
       </div>
-      <br>
-      <div>
-        <button class="button-logout right" type="button" onclick="logout()">Log out</button>
+      <br />
+      <div class="todo-app__logout">
+        <button
+          class="todo-app__button todo-app__button--logout"
+          type="button"
+          onclick="logout()"
+        >
+          Log out
+        </button>
       </div>
     </div>
   </body>
