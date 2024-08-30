@@ -14,7 +14,10 @@ const getStatusCondition = Object.freeze({
   Undone: "undone",
   All: "all",
 });
+
+const url = Object.freeze ({ connectMongodb: "mongodb+srv://phong:tp0yu8xGw7EVbRHq@mongo.pvtl6.mongodb.net/" });
 module.exports = {
   StatusCode,
   getStatusCondition,
+  url,
 };

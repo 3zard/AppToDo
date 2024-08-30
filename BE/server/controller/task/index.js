@@ -1,8 +1,9 @@
 const { writeFile, getBody, handleNotFound } = require("../../utils/helper.js");
-const { StatusCode, getStatusCondition } = require("../../constant/status.js");
-const { MongoClient } = require("mongodb");
-const uri = "mongodb+srv://phong:tp0yu8xGw7EVbRHq@mongo.pvtl6.mongodb.net/";
-const client = new MongoClient(uri);
+const { StatusCode} = require("../../constant/status.js");
+const {MongoClient} = require("mongodb");
+const { url } = require("../../constant/status.js");
+const client = new MongoClient(url.connectMongodb);
+
 async function getTaskList(request, response, userId) {
   // const userId = "66cf20beddecf0573578eeb9"
   try {
