@@ -1,0 +1,22 @@
+@startuml register user Controller activity
+start
+:Receive request from router;
+if (check if username or password is empty?) then (no)
+    :Response status code: 400 (Bad Request);
+    :Send message: "Missing username or password";
+else (yes)
+    if (check if username already exists?) then (no)
+        :Send username and password to database;
+        if (registration successful?) then (no)
+            :Response status code: 500 (Internal Server Error);
+            :Send message: "Cannot register";
+        else (yes)
+            :Response status code: 201 (Created);
+            :Send message: "User registered successfully";
+        endif
+    else (yes)
+        :Send message: "Username already exists";
+    endif
+endif
+stop
+@enduml

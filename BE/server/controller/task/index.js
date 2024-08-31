@@ -132,6 +132,7 @@ async function deleteTask(request, response, userId) {
     const result = await tasksCollection.deleteOne({
       _id: new ObjectId(id), "owner": userId
     });
+    
     if (result.deletedCount === 1) {
       response.writeHead(StatusCode.NO_CONTENT, {
         "Content-Type": "application/json",
