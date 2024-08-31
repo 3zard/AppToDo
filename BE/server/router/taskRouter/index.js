@@ -5,26 +5,10 @@ var routes = require("../routes.js");
 const { taskController } = require("../../controller/index.js");
 var userRouter = {
   run(request, response) {
-    routerMethods.get(request, response, routes.tasks.value, [
-      middleware.checkToken,
-      taskController.getTaskList,
-    ]);
-    routerMethods.post(request, response, routes.tasks.value, [
-      middleware.checkToken,
-      taskController.createTask,
-    ]);
-    routerMethods.delete(
-      request,
-      response,
-      routes.tasks.value,
-      [middleware.checkToken, taskController.deleteTask]
-    );
-    routerMethods.patch(
-      request,
-      response,
-      routes.tasks.value,
-      [middleware.checkToken, taskController.updateTask]
-    );
+    routerMethods.get(request, response, routes.tasks.value, [middleware.checkToken,taskController.getTaskList,]);
+    routerMethods.post(request, response, routes.tasks.value, [middleware.checkToken,taskController.createTask,]);
+    routerMethods.delete(request,response,routes.tasks.value,[middleware.checkToken, taskController.deleteTask]);
+    routerMethods.patch(request,response,routes.tasks.value, [middleware.checkToken, taskController.updateTask]);
   },
 };
 module.exports = userRouter;
