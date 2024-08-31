@@ -1,0 +1,11 @@
+@startuml getTask Controller activity
+start
+:Receive userID from router; 
+if (Find tasks with this userID) then (yes)
+    :Response status code: 200 (OK);
+    :Send tasks to client;
+else (no)
+    :Response status code: error 404(Not Found);
+endif
+stop
+@enduml

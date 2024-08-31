@@ -1,0 +1,14 @@
+@startuml diagram router getTask
+start
+:Receive request; 
+if (check url === "/tasks" && method === "GET") then (no) 
+    :Skip;
+    else (yes) 
+    if (check middlewares) then (no) 
+        :Send response;
+        else (yes) 
+        :Call getTask controller;
+    endif
+endif
+stop
+@enduml
