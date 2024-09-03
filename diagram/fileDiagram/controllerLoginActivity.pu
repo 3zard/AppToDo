@@ -1,0 +1,17 @@
+@startuml createTask Controller activity
+start
+:Receive request from router;
+if (check if username or password in body is empty?) then (yes)
+    :Response status code: 400 (Bad Request);
+    :Send Error: "Missing username or password";
+else (no)
+    if (The user exists on the database?) then (yes)
+        :Response: "200 OK"
+        :Send: "token" ;
+    else (no)
+        :Response: "404 not found"
+        :Send Message:"User not found" ;
+    endif
+endif
+stop
+@enduml
