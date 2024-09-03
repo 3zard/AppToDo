@@ -1,7 +1,7 @@
-@startuml diagram router editTask 
+@startuml diagram router updateTask 
 start
 :Receive request; 
-if (check url = "/tasks/{id}") then (no) 
+if (check url = "/tasks") then (no) 
     :Response status code: error 404(not found);
     else (yes) 
         if (method = "PATCH"?) then (no)
