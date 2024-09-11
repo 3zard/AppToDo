@@ -1,10 +1,7 @@
-const {
-  StatusCode,
-  writeFile,
-  getBody,
-  handleNotFound,
-  generateId,
-} = require("../utils.js");
+const { getBody } = require("../utils/request.js");
+const { writeFile } = require("../utils/file.js");
+const { generateId } = require("../utils/generateId.js");
+const { StatusCode } = require("../constans.js");
 const fs = require("fs").promises;
 
 async function readDataBase(request, response) {

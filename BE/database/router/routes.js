@@ -1,10 +1,10 @@
-const { read } = require("fs");
+const collection = {
+  read: "read",
+  create: "create",
+  update: "update",
+  delete: "delete",
+};
 
 module.exports = {
-  collection: {
-    read: "read",
-    create: "create",
-    update: "update",
-    delete: "delete",
-  },
+  collection,
 };
