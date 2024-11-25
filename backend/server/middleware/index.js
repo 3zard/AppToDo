@@ -1,5 +1,5 @@
 const { decodeBase64 } = require("../utils/helper");
-const { StatusCode } = require("../constant/status");
+const { statusCode } = require("../constant/status");
 
 function runMiddleWares(request, response, middlewares) {
   let index = 0;
@@ -19,7 +19,7 @@ function runMiddleWares(request, response, middlewares) {
 async function checkToken(request, response, next) {
   const encodeToken = request.headers.authorization.replace("Bearer ", "");
   if (!encodeToken) {
-    response.writeHead(StatusCode.UNAUTHORIZED, {
+    response.writeHead(statusCode.UNAUTHORIZED, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Token is missing" }));
@@ -35,7 +35,7 @@ async function checkToken(request, response, next) {
       body: JSON.stringify({ "filter": { id: token } })
     });
     if (!user.ok) {
-      response.writeHead(StatusCode.UNAUTHORIZED, {
+      response.writeHead(statusCode.UNAUTHORIZED, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Token is invalid" }));

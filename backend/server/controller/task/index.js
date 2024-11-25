@@ -1,5 +1,5 @@
 const { writeFile, getBody, handleNotFound } = require("../../utils/helper.js");
-const { StatusCode, getStatusCondition } = require("../../constant/status.js");
+const { statusCode, getStatusCondition } = require("../../constant/status.js");
 
 async function getTaskList(request, response, userId) {
   try {
@@ -26,18 +26,18 @@ async function getTaskList(request, response, userId) {
     });
 
     if (!taskList.ok) {
-      response.writeHead(StatusCode.NOT_FOUND, {
+      response.writeHead(statusCode.NOT_FOUND, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Tasks not found" }));
     }
 
     const data = await taskList.json();
-    response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
+    response.writeHead(statusCode.OK, { "Content-Type": "application/json" });
     response.end(JSON.stringify(data));
   } catch (error) {
     console.error("Error fetching task list:", error);
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+    response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Failed to fetch task list" }));
@@ -50,7 +50,7 @@ async function createTask(request, response, userId) {
     const { name, completed } = body;
 
     if (!name || completed === null || completed === undefined) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Invalid task data" }));
@@ -65,18 +65,18 @@ async function createTask(request, response, userId) {
     });
 
     if (!taskResponse.ok) {
-      response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+      response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Task creation failed" }));
     }
 
     const data = await taskResponse.json();
-    response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
+    response.writeHead(statusCode.OK, { "Content-Type": "application/json" });
     response.end(JSON.stringify(data.id));
   } catch (error) {
     console.error("Error creating task:", error);
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+    response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Cannot create task" }));
@@ -87,7 +87,7 @@ async function updateTask(request, response, userId) {
   try {
     const body = await getBody(request);
     if (!body) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "No body" }));
@@ -104,7 +104,7 @@ async function updateTask(request, response, userId) {
     });
 
     if (!taskResponse.ok) {
-      response.writeHead(StatusCode.NOT_FOUND, {
+      response.writeHead(statusCode.NOT_FOUND, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Task not found" }));
@@ -128,19 +128,19 @@ async function updateTask(request, response, userId) {
     });
 
     if (!updateResponse.ok) {
-      response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+      response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Failed to update task" }));
     }
 
-    response.writeHead(StatusCode.NO_CONTENT, {
+    response.writeHead(statusCode.NO_CONTENT, {
       "Content-Type": "application/json",
     });
     response.end();
   } catch (error) {
     console.error("Error updating task:", error);
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+    response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Cannot update task" }));
@@ -151,7 +151,7 @@ async function deleteTask(request, response, userId) {
   try {
     const body = await getBody(request);
     if (!body) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "No body" }));
@@ -159,7 +159,7 @@ async function deleteTask(request, response, userId) {
 
     const { id } = JSON.parse(body);
     if (!id) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       return response.end(
@@ -176,7 +176,7 @@ async function deleteTask(request, response, userId) {
     });
 
     if (!taskResponse.ok) {
-      response.writeHead(StatusCode.NOT_FOUND, {
+      response.writeHead(statusCode.NOT_FOUND, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Task not found" }));
@@ -191,19 +191,19 @@ async function deleteTask(request, response, userId) {
     });
 
     if (!deleteResponse.ok) {
-      response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+      response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Failed to delete task" }));
     }
 
-    response.writeHead(StatusCode.NO_CONTENT, {
+    response.writeHead(statusCode.NO_CONTENT, {
       "Content-Type": "application/json",
     });
     response.end();
   } catch (error) {
     console.error("Error deleting task:", error);
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+    response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Cannot delete task" }));

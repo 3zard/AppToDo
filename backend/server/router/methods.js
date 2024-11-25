@@ -1,7 +1,7 @@
 const url = require("url");
 const { runMiddleWares } = require("../middleware");
 
-var routerMethods = {
+const routerMethods = {
   get: function (request, response, path, middlewares) {
     if (path === url.parse(request.url, true).pathname && request.method === "GET") {
       runMiddleWares(request, response, middlewares);

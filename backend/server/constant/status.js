@@ -1,4 +1,4 @@
-const StatusCode = Object.freeze({
+const statusCode = Object.freeze({
   OK: 200,
   CREATED: 201,
   NO_CONTENT: 204,
@@ -17,6 +17,6 @@ const getStatusCondition = Object.freeze({
 });
 
 module.exports = {
-  StatusCode,
+  statusCode,
   getStatusCondition,
 };

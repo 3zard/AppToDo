@@ -1,7 +1,7 @@
 const { getBody } = require("../utils/request.js");
 const { writeFile } = require("../utils/file.js");
 const { generateId } = require("../utils/generateId.js");
-const { StatusCode } = require("../constans.js");
+const { statusCode } = require("../constans.js");
 const fs = require("fs").promises;
 
 async function readDataBase(request, response) {
@@ -9,7 +9,7 @@ async function readDataBase(request, response) {
   const body = await getBody(request);
   const { filter } = JSON.parse(body);
   if (!filter || Object.keys(filter).length === 0) {
-    response.writeHead(StatusCode.BAD_REQUEST, {
+    response.writeHead(statusCode.BAD_REQUEST, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Invalid filter data" }));
@@ -33,7 +33,7 @@ async function readDataBase(request, response) {
     }
     return match;
   });
-  response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
+  response.writeHead(statusCode.OK, { "Content-Type": "application/json" });
   response.write(JSON.stringify(filteredRecords));
   response.end();
 }
@@ -43,7 +43,7 @@ async function createDatabase(request, response) {
   const body = await getBody(request);
   const { record } = JSON.parse(body);
   if (!record || Object.keys(record).length === 0) {
-    response.writeHead(StatusCode.BAD_REQUEST, {
+    response.writeHead(statusCode.BAD_REQUEST, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Invalid record data" }));
@@ -55,7 +55,7 @@ async function createDatabase(request, response) {
     data = await fs.readFile(path, "utf8");
   } catch (error) {
     console.error("Error reading database:", error);
-    response.writeHead(StatusCode.NOT_FOUND, {
+    response.writeHead(statusCode.NOT_FOUND, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Collection not found" }));
@@ -67,7 +67,7 @@ async function createDatabase(request, response) {
   };
   records.push(newRecord);
   writeFile(path, JSON.stringify(records));
-  response.writeHead(StatusCode.CREATED, {
+  response.writeHead(statusCode.CREATED, {
     "Content-Type": "application/json",
   });
   response.write(JSON.stringify(newRecord));
@@ -79,7 +79,7 @@ async function updateDatabase(request, response) {
     const collection = request.url.split("/")[1]; // Assumes URL format is /collection/update
     const body = await getBody(request);
     if (!body) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Invalid request body" }));
@@ -87,7 +87,7 @@ async function updateDatabase(request, response) {
     }
     const { record } = JSON.parse(body);
     if (!record || Object.keys(record).length === 0) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Invalid record data" }));
@@ -106,13 +106,13 @@ async function updateDatabase(request, response) {
       item.id === record.id.toString() ? record : item
     );
     writeFile(path, JSON.stringify(updatedRecords));
-    response.writeHead(StatusCode.NO_CONTENT, {
+    response.writeHead(statusCode.NO_CONTENT, {
       "Content-Type": "application/json",
     });
     response.end();
   } catch (error) {
     console.error("Error updating database:", error);
-    response.writeHead(StatusCode.BAD_REQUEST, {
+    response.writeHead(statusCode.BAD_REQUEST, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Failed to update database" }));
@@ -124,7 +124,7 @@ async function deleteDatabase(request, response) {
   const body = await getBody(request);
   const { record } = JSON.parse(body);
   if (!record || Object.keys(record).length === 0) {
-    response.writeHead(StatusCode.BAD_REQUEST, {
+    response.writeHead(statusCode.BAD_REQUEST, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Invalid filter data" }));
@@ -136,7 +136,7 @@ async function deleteDatabase(request, response) {
     data = await fs.readFile(path, "utf8");
   } catch (error) {
     console.error("Error reading database:", error);
-    response.writeHead(StatusCode.NOT_FOUND, {
+    response.writeHead(statusCode.NOT_FOUND, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Collection not found" }));
@@ -146,7 +146,7 @@ async function deleteDatabase(request, response) {
     (item) => item.id !== record.id.toString()
   );
   writeFile(path, JSON.stringify(updatedRecords));
-  response.writeHead(StatusCode.NO_CONTENT, {
+  response.writeHead(statusCode.NO_CONTENT, {
     "Content-Type": "application/json",
   });
   response.write(JSON.stringify(updatedRecords));

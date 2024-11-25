@@ -1,4 +1,4 @@
-var routerMethods = {
+const routerMethods = {
   get: function (request, response, path, callback) {
     const pathUrl = request.url.split("/")[2]; 
     if (path === pathUrl && request.method === "GET") {

@@ -1,11 +1,11 @@
 const { getBody, encodeBase64 } = require("../../utils/helper.js");
-const { StatusCode } = require("../../constant/status.js");
+const { statusCode } = require("../../constant/status.js");
 
 async function login(request, response) {
   const body = JSON.parse(await getBody(request));
   const { username, password } = body;
   if (!username || !password) {
-    response.writeHead(StatusCode.BAD_REQUEST, {
+    response.writeHead(statusCode.BAD_REQUEST, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Missing username or password" }));
@@ -19,7 +19,7 @@ async function login(request, response) {
     body: JSON.stringify({ filter: { ...body } }),
   });
   if (!user.ok) {
-    response.writeHead(StatusCode.UNAUTHORIZED, {
+    response.writeHead(statusCode.UNAUTHORIZED, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Invalid username or password" }));
@@ -27,7 +27,7 @@ async function login(request, response) {
   }
   const data = await user.json();
   const userID = data[0].id;
-  response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
+  response.writeHead(statusCode.OK, { "Content-Type": "application/json" });
   response.end(
     JSON.stringify({ username: data[0].username, token: encodeBase64(userID) })
   );
@@ -36,7 +36,7 @@ async function register(request, response) {
   const body = JSON.parse(await getBody(request));
   const { username, password } = body;
   if (!username || !password) {
-    response.writeHead(StatusCode.BAD_REQUEST, {
+    response.writeHead(statusCode.BAD_REQUEST, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Missing username or password" }));
@@ -51,7 +51,7 @@ async function register(request, response) {
       body: JSON.stringify({ filter: { username } }),
     });
     if (!isUserNameExited.ok) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Username already exists" }));
@@ -69,14 +69,14 @@ async function register(request, response) {
     body: JSON.stringify({ record: { ...body } }),
   });
   if (!user.ok) {
-    response.writeHead(StatusCode.UNAUTHORIZED, {
+    response.writeHead(statusCode.UNAUTHORIZED, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Invalid username or password" }));
     return;
   }
   const data = await user.json();
-  response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
+  response.writeHead(statusCode.OK, { "Content-Type": "application/json" });
   response.end(JSON.stringify(data));
 }
 
