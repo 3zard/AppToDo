@@ -1,4 +1,4 @@
-const StatusCode = Object.freeze({
+const statusCode = Object.freeze({
   OK: 200,
   CREATED: 201,
   NO_CONTENT: 204,
@@ -9,6 +9,7 @@ const StatusCode = Object.freeze({
   INTERNAL_SERVER_ERROR: 500,
   SERVICE_UNAVAILABLE: 503,
 });
+
 const getStatusCondition = Object.freeze({
   Done: "done",
   Undone: "undone",
@@ -17,7 +18,7 @@ const getStatusCondition = Object.freeze({
 
 const url = Object.freeze ({ connectMongodb: "mongodb+srv://phong:tp0yu8xGw7EVbRHq@mongo.pvtl6.mongodb.net/" });
 module.exports = {
-  StatusCode,
+  statusCode,
   getStatusCondition,
   url,
 };

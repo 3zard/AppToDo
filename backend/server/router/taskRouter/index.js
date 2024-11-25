@@ -1,9 +1,9 @@
-var routerMethods = require("../methods.js");
+const routerMethods = require("../methods.js");
 const middleware = require("../../middleware/index.js");
 
-var routes = require("../routes.js");
+const routes = require("../routes.js");
 const { taskController } = require("../../controller/index.js");
-var userRouter = {
+const userRouter = {
   run(request, response) {
     routerMethods.get(request, response, routes.tasks.value, [
       middleware.checkToken,

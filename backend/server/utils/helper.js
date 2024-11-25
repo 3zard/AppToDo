@@ -1,8 +1,8 @@
 const fs = require("fs");
-const { StatusCode } = require("../constant/status.js");
+const { statusCode } = require("../constant/status.js");
 
 function handleNotFound(request, response) {
-  response.writeHead(StatusCode.NOT_FOUND, { "Content-Type": "text/plain" });
+  response.writeHead(statusCode.NOT_FOUND, { "Content-Type": "text/plain" });
   response.end("Not Found");
 }
 
@@ -35,9 +35,11 @@ function getBody(request) {
 function encodeBase64(input) {
   return Buffer.from(input).toString("base64");
 }
+
 function decodeBase64(encoded) {
   return Buffer.from(encoded, "base64").toString("utf-8");
 }
+
 module.exports = {
   getBody,
   writeFile,

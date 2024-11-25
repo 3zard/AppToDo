@@ -1,5 +1,5 @@
 const { writeFile, getBody, handleNotFound } = require("../../utils/helper.js");
-const { StatusCode} = require("../../constant/status.js");
+const { statusCode} = require("../../constant/status.js");
 const {MongoClient, ObjectId} = require("mongodb");
 const { url } = require("../../constant/status.js");
 const client = new MongoClient(url.connectMongodb);
@@ -12,18 +12,18 @@ async function getTaskList(request, response, userId) {
 
     const task = await tasks.find(query).toArray();
     if (task) {
-      response.writeHead(StatusCode.OK, { "Content-Type": "application/json" });
+      response.writeHead(statusCode.OK, { "Content-Type": "application/json" });
       response.end(JSON.stringify(task));
       
     } else {
-      response.writeHead(StatusCode.NOT_FOUND, {
+      response.writeHead(statusCode.NOT_FOUND, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Tasks not found" }));
     }
   } catch (error) {
     console.error("Error fetching task list:", error);
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+    response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Failed to fetch task list" }));
@@ -36,7 +36,7 @@ async function createTask(request, response, userId) {
     const { name, completed } = body;
 
     if (!name || completed === null || completed === undefined) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Invalid task data" }));
@@ -52,19 +52,19 @@ async function createTask(request, response, userId) {
       });
     } catch (error) {
       console.log(error);
-      response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+      response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
         "Content-Type": "application/json",
       });
       return response.end(JSON.stringify({ error: "Cannot create task" }));
     }
    
-    response.writeHead(StatusCode.CREATED, {
+    response.writeHead(statusCode.CREATED, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ message: "Task created" }));
   } catch (error) {
     console.error("Error creating task:", error);
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+    response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Cannot create task" }));
@@ -83,7 +83,7 @@ async function updateTask(request, response, userId) {
     });
     
     if (!existingTask) {
-      response.writeHead(StatusCode.NOT_FOUND, {
+      response.writeHead(statusCode.NOT_FOUND, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Task not found" }));
@@ -95,19 +95,19 @@ async function updateTask(request, response, userId) {
     );
 
     if (result.matchedCount === 0) {
-      response.writeHead(StatusCode.NOT_FOUND, {
+      response.writeHead(statusCode.NOT_FOUND, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Task not found" }));
     } else {
-      response.writeHead(StatusCode.NO_CONTENT, {
+      response.writeHead(statusCode.NO_CONTENT, {
         "Content-Type": "application/json",
       });
       response.end();
     }
   } catch (error) {
     console.error("Error updating task:", error);
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+    response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Cannot update task" }));
@@ -119,7 +119,7 @@ async function deleteTask(request, response, userId) {
     const body = JSON.parse(await getBody(request));
     const { id } = body;
     if (!id) {
-      response.writeHead(StatusCode.BAD_REQUEST, {
+      response.writeHead(statusCode.BAD_REQUEST, {
         "Content-Type": "application/json",
       });
       return response.end(
@@ -133,19 +133,19 @@ async function deleteTask(request, response, userId) {
       _id: new ObjectId(id), "owner": userId
     });
     if (result.deletedCount === 1) {
-      response.writeHead(StatusCode.NO_CONTENT, {
+      response.writeHead(statusCode.NO_CONTENT, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ message: "Task deleted successfully." }));
     } else {
-      response.writeHead(StatusCode.NOT_FOUND, {
+      response.writeHead(statusCode.NOT_FOUND, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Task to delete not found." }));
     }
   } catch (error) {
     console.error("Error when deleting task:", error);
-    response.writeHead(StatusCode.INTERNAL_SERVER_ERROR, {
+    response.writeHead(statusCode.INTERNAL_SERVER_ERROR, {
       "Content-Type": "application/json",
     });
     response.end(

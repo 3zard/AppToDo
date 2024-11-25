@@ -1,5 +1,5 @@
 const { decodeBase64 } = require("../utils/helper");
-const { StatusCode } = require("../constant/status");
+const { statusCode } = require("../constant/status");
 const { MongoClient, ObjectId } = require("mongodb");
 const { url } = require("../constant/status.js");
 const client = new MongoClient(url.connectMongodb);
@@ -22,7 +22,7 @@ function runMiddleWares(request, response, middlewares) {
 async function checkToken(request, response, next) {
   const encodeToken = request.headers.authorization.replace("Bearer ", "");
   if (!encodeToken) {
-    response.writeHead(StatusCode.UNAUTHORIZED, {
+    response.writeHead(statusCode.UNAUTHORIZED, {
       "Content-Type": "application/json",
     });
     response.end(JSON.stringify({ error: "Token is missing" }));
@@ -35,7 +35,7 @@ async function checkToken(request, response, next) {
     const query = { _id: new ObjectId(token) };
     const user = await users.findOne(query);
     if (!user) {
-      response.writeHead(StatusCode.UNAUTHORIZED, {
+      response.writeHead(statusCode.UNAUTHORIZED, {
         "Content-Type": "application/json",
       });
       response.end(JSON.stringify({ error: "Invalid token" }));
