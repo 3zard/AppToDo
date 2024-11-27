@@ -16,7 +16,7 @@ function TodoList() {
 
   const handleComplete = async (id, completed) => {};
 
-  const addTask = async (task) => {
+  const addTask = (task) => {
     const newTask = {
       id: Date.now(),
       task: task,
@@ -25,7 +25,9 @@ function TodoList() {
     setTasks((prev) => [...prev, newTask]);
   };
 
-  const deleteTask = async (id) => {};
+  const deleteTask = (id) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+  };
 
   return (
     <div className="todo-container">
